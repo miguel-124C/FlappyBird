@@ -2,6 +2,7 @@ package com.flappybird.factories;
 
 import java.util.Random;
 
+import com.flappybird.interfaces.Sprite;
 import com.flappybird.models.PipeEntity;
 import com.flappybird.utils.*;
 
@@ -19,10 +20,11 @@ public class PipeFactory {
     public PipeEntity spawnPipe() {
         var position = new Vector2(LIMIT_WIDTH, 0);
 
-        var heightSource = random.nextFloat(MIN_HEIGHT_PIPE, MAX_HEIGHT_PIPE);
-        var sourceRectangle = new Rectangle(303, 0, 24, heightSource);
+        // var heightSource = random.nextFloat(MIN_HEIGHT_PIPE, MAX_HEIGHT_PIPE);
+        // var sourceRectangle = new Rectangle(303, 0, 24, heightSource);
 
-        return new PipeEntity(position, sourceRectangle);
+        var sprite = new Sprite();
+        return new PipeEntity(position, sprite);
     }
 
     public PipeEntity spawnSecondPipe(PipeEntity pipe){
@@ -32,10 +34,11 @@ public class PipeFactory {
         var ySecondPipe = heightPipe + GAP_BETWEEN_PIPES;
         var position = new Vector2(pipeDimension.X, ySecondPipe);
 
-        var heightSource = LIMIT_HEGHT - ySecondPipe;
-        var sourceRectangle = new Rectangle(330, 0, 24, heightSource);
+        // var heightSource = LIMIT_HEGHT - ySecondPipe;
+        // var sourceRectangle = new Rectangle(330, 0, 24, heightSource);
 
-        return new PipeEntity(position, sourceRectangle);
+        var sprite = new Sprite();
+        return new PipeEntity(position, sprite);
     }
 
 }
