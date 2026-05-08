@@ -26,7 +26,7 @@ public class App {
 
     private static BirdEntity createBird(){
         var birdFactory = new BirdFactory();
-        return birdFactory.create(new Vector2(500, 0), "fds");
+        return birdFactory.create(new Vector2(500, 500), "fds");
     }
     
 }

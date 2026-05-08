@@ -10,16 +10,20 @@ public class GameCore {
     private final PipeFactory pipeFactory;
 
     private float timeSpawnPipes = 0;
-    public final float TIME_PER_PIPES = 1;
+    public final float TIME_PER_PIPES = 4;
 
     public GameCore(World world, PipeFactory pipeFactory){
         state = State.MENU;
         this.world = world;
         this.pipeFactory = pipeFactory;
+        spawnPipes();
     }
 
     public void update(float deltaTime){
         timeSpawnPipes += deltaTime;
+
+        var bird = world.Bird;
+        bird.fall(deltaTime);
 
         if (world.hasCollision()) {
             state = State.GAME_OVER;
@@ -27,15 +31,19 @@ public class GameCore {
         }
 
         if (timeSpawnPipes >= TIME_PER_PIPES) {
-            var firstPipe = pipeFactory.spawnPipe();
-            var secondPipe = pipeFactory.spawnSecondPipe(firstPipe);
-
-            world.addPipe(firstPipe);
-            world.addPipe(secondPipe);
+            spawnPipes();
             timeSpawnPipes = 0;
         }
 
         world.moveAllPipes(deltaTime);
+    }
+
+    private void spawnPipes(){
+        var firstPipe = pipeFactory.spawnPipe();
+        var secondPipe = pipeFactory.spawnSecondPipe(firstPipe);
+
+        world.addPipe(firstPipe);
+        world.addPipe(secondPipe);
     }
 
     public void changeState(State state){

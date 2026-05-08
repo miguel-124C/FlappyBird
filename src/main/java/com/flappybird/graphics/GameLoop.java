@@ -2,6 +2,7 @@ package com.flappybird.graphics;
 
 import java.nio.FloatBuffer;
 
+import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
@@ -25,7 +26,8 @@ public class GameLoop {
     private int uOffsetLocation;
     private int uScaleLocation;
     private int uColorLocation;
-    
+    private int uProjectionLocation;
+
     private final InputManager INPUT_MANAGER;
     private final GameCore GAME_CORE;
 
@@ -81,13 +83,13 @@ public class GameLoop {
             float deltaTime = now - lastTime;
             lastTime = now;
             // Limite de dt para evitar "saltos" grandes si el frame se congela.
-            
-            if (deltaTime > 0.033f)
-                deltaTime = 0.033f;
+
+            // if (deltaTime > 0.033f)
+            //     deltaTime = 0.033f;
 
             INPUT_MANAGER.update(deltaTime);
             GAME_CORE.update(deltaTime);
-            // render();
+            render();
 
             // Presentar frame y leer eventos.
             GLFW.glfwSwapBuffers(window);
@@ -109,9 +111,10 @@ public class GameLoop {
             layout (location = 0) in vec3 aPos;
             uniform vec2 uOffset;
             uniform vec2 uScale;
+            uniform mat4 uProjection;
             void main() {
                 vec2 finalPos = aPos.xy * uScale + uOffset;
-                gl_Position = vec4(finalPos, aPos.z, 1.0);
+                gl_Position = uProjection * vec4(finalPos, aPos.z, 1.0);
             }
             """;
 
@@ -151,6 +154,7 @@ public class GameLoop {
         uOffsetLocation = GL20.glGetUniformLocation(programa, "uOffset");
         uScaleLocation = GL20.glGetUniformLocation(programa, "uScale");
         uColorLocation = GL20.glGetUniformLocation(programa, "uColor");
+        uProjectionLocation = GL20.glGetUniformLocation(programa, "uProjection");
         if (uOffsetLocation == -1 || uScaleLocation == -1 || uColorLocation == -1) {
             throw new RuntimeException("No se pudieron obtener uniforms del shader");
         }
@@ -175,12 +179,12 @@ public class GameLoop {
      */
     private void crearQuadBase() {
         float[] vertices = {
-            -0.5f, -0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-             0.5f,  0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-             0.5f,  0.5f, 0.0f,
-            -0.5f,  0.5f, 0.0f
+            0.0f, 0.0f, 0.0f, // Arriba Izquierda
+            1.0f, 0.0f, 0.0f, // Arriba Derecha
+            1.0f, 1.0f, 0.0f, // Abajo Derecha
+            0.0f, 0.0f, 0.0f,
+            1.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f
         };
 
         // VAO.
@@ -203,5 +207,43 @@ public class GameLoop {
         // Desbind.
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         GL30.glBindVertexArray(0);
+    }
+
+    private void render() {
+        // Cielo.
+        GL11.glClearColor(0.52f, 0.80f, 0.92f, 1.0f);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+
+        // Activar pipeline y malla base.
+        GL20.glUseProgram(programa);
+        GL30.glBindVertexArray(vao);
+
+        Matrix4f projection = new Matrix4f().ortho(0, Constants.screenWidth, Constants.screenHeight, 0, -1, 1); // 0,0 arriba izquierda
+        float[] matrixBuffer = new float[16];
+        projection.get(matrixBuffer);
+        GL20.glUniformMatrix4fv(uProjectionLocation, false, matrixBuffer);
+
+        var world = GAME_CORE.world;
+        for (var pipe : world.getPipes()) {
+            var dimension = pipe.getDimensions();
+            dibujarRect(dimension.X, dimension.Y, dimension.WIDTH, dimension.HEIGHT, 0.18f, 0.70f, 0.25f);
+        }
+
+        var bird = world.Bird;
+        var dimension = bird.getDimensions();
+
+        dibujarRect(dimension.X, dimension.Y, dimension.WIDTH, dimension.HEIGHT, 0.98f, 0.85f, 0.20f);
+    }
+
+    // Helper de dibujo parametrico de rectangulos.
+    private void dibujarRect(float x, float y, float ancho, float alto, float r, float g, float b) {
+        // Traslacion del quad.
+        GL20.glUniform2f(uOffsetLocation, x, y);
+        // Escala del quad.
+        GL20.glUniform2f(uScaleLocation, ancho, alto);
+        // Color.
+        GL20.glUniform3f(uColorLocation, r, g, b);
+        // Dibujar 2 triangulos.
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6);
     }
 }
