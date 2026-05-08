@@ -13,7 +13,7 @@ public class GameCore {
     public final float TIME_PER_PIPES = 4;
 
     public GameCore(World world, PipeFactory pipeFactory){
-        state = State.MENU;
+        state = State.PLAYING;
         this.world = world;
         this.pipeFactory = pipeFactory;
         spawnPipes();
@@ -25,7 +25,7 @@ public class GameCore {
         var bird = world.Bird;
         bird.fall(deltaTime);
 
-        if (world.hasCollision()) {
+        if (world.hasCollision() || world.isBirdOutScreen()) {
             state = State.GAME_OVER;
             return;
         }

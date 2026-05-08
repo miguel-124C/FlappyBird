@@ -3,12 +3,15 @@ package com.flappybird.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flappybird.utils.Constants;
+
 public class World {
     public final BirdEntity Bird;
     private List<PipeEntity> pipes = new ArrayList<>();
+    private List<CoinEntity> coins = new ArrayList<>();
 
-    private final float SPEED_PIPES = 100f;
-    
+    private int score = 0;
+    private int level = 1;
 
     public World(BirdEntity bird){
         this.Bird = bird;
@@ -35,21 +38,29 @@ public class World {
         for (int i = 0; i < pipes.size(); i++) {
             var pipe = pipes.get(i);
 
-            pipe.moveLeft(SPEED_PIPES * time);
+            pipe.moveLeft(time);
 
             checkPipeBehind(pipe);
             checkPipeOutScreen(pipe, i);
         }
     }
 
+    public boolean isBirdOutScreen(){
+        var dimension = Bird.getDimensions();
+
+        var outScreenY = dimension.Y <= 0 || dimension.Y + dimension.HEIGHT >= Constants.screenHeight;
+        var outScreenX = dimension.X <= 0 || dimension.X + dimension.WIDTH >= Constants.screenWidth;
+        return (outScreenX || outScreenY);
+    }
+
     private void checkPipeBehind(PipeEntity pipe){
-        if (!pipe.isBehind) return;
+        if (pipe.isBehind) return;
         var dimensionPipe = pipe.getDimensions();
             
         if (Bird.position.x() > dimensionPipe.X + dimensionPipe.WIDTH){
             pipe.isBehind = true;
-            // Sumar puntos y score
-
+            score += 5;
+            System.out.println(score);
         }
     }
 

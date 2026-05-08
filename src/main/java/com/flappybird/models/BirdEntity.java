@@ -8,8 +8,8 @@ public class BirdEntity extends Entity {
 
     // Fisica vertical.
     private final float GRAVITY = 400f;          // Aumentado para reacción rápida
-    private final float JUMP_IMPULSE = -300f;     // Negativo para subir
-    private final float MAX_FALL_SPEED = 600f;    // Límite de caída rápido
+    private final float JUMP_IMPULSE = -250f;     // Negativo para subir
+    private final float MAX_FALL_SPEED = 500f;    // Límite de caída rápido
     private float speedY = 0;
 
     private int currentFrame = 0;
