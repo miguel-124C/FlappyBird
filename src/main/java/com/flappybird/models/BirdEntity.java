@@ -2,15 +2,14 @@ package com.flappybird.models;
 
 import com.flappybird.interfaces.Entity;
 import com.flappybird.interfaces.Sprite;
-import com.flappybird.utils.Rectangle;
 import com.flappybird.utils.Vector2;
 
 public class BirdEntity extends Entity {
 
     // Fisica vertical.
-    private final float GRAVITY = -1.9f;
-    private final float JUMP_IMPULSE = 0.85f;
-    private final float MAXIMUM_FALL_SPEED = -1.8f;
+    private final float GRAVITY = 400f;          // Aumentado para reacción rápida
+    private final float JUMP_IMPULSE = -300f;     // Negativo para subir
+    private final float MAX_FALL_SPEED = 600f;    // Límite de caída rápido
     private float speedY = 0;
 
     private int currentFrame = 0;
@@ -33,17 +32,17 @@ public class BirdEntity extends Entity {
     public void fall(float deltaTime){
         var dimension = this.getDimensions();
 
-        var y = dimension.Y + (currentFrame * (dimension.WIDTH + gapFrames));
-        this.sprite.sourceRectangle = new Rectangle(dimension.X, y, dimension.WIDTH, dimension.HEIGHT);
+        // var y = dimension.Y + (currentFrame * (dimension.WIDTH + gapFrames));
+        // this.sprite.sourceRectangle = new Rectangle(dimension.X, y, dimension.WIDTH, dimension.HEIGHT);
 
         // Integracion de fisica simple.
         speedY += GRAVITY * deltaTime;
         // Limitar velocidad de caida para sensacion jugable estable.
-        if (speedY < MAXIMUM_FALL_SPEED) {
-            speedY = MAXIMUM_FALL_SPEED;
+        if (speedY > MAX_FALL_SPEED) {
+            speedY = MAX_FALL_SPEED;
         }
 
-        var newY = speedY + deltaTime;
+        var newY = dimension.Y + (speedY * deltaTime);
         this.position = new Vector2(dimension.X, newY);
     }
 
