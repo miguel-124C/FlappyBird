@@ -25,4 +25,14 @@ public class GameRender implements IRender {
             var source = pipe.sprite.sourceRectangle;
         }
     }
+
+    @Override
+    public void initialize() {
+        throw new UnsupportedOperationException("Unimplemented method 'initialize'");
+    }
+
+    @Override
+    public void cleanUp() {
+        throw new UnsupportedOperationException("Unimplemented method 'cleanUp'");
+    }
 }
