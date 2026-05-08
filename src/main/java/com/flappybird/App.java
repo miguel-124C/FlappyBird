@@ -8,6 +8,7 @@ import com.flappybird.models.BirdEntity;
 import com.flappybird.models.GameCore;
 import com.flappybird.models.World;
 import com.flappybird.utils.Vector2;
+import com.flappybird.views.ManagerRender;
 
 public class App {
 
@@ -21,7 +22,10 @@ public class App {
 
         var gameCore = new GameCore(world, pipeFactory);
         var inputManager = new InputManager();
-        new GameLoop(inputManager, gameCore);
+
+        var managerRender = new ManagerRender(gameCore, null);
+
+        new GameLoop(inputManager, gameCore, managerRender);
     }
 
     private static BirdEntity createBird(){
