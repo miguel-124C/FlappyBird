@@ -7,7 +7,7 @@ public class World {
     public final BirdEntity Bird;
     private List<PipeEntity> pipes = new ArrayList<>();
 
-    private final float SPEED_PIPES = 0.62f;
+    private final float SPEED_PIPES = 100f;
     
 
     public World(BirdEntity bird){
