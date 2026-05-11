@@ -1,24 +1,19 @@
 package com.flappybird.graphics;
 
-import com.flappybird.utils.Texture;
-import com.flappybird.utils.Vector2;
-
 import java.nio.FloatBuffer;
 
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import com.flappybird.utils.Constants;
-import com.flappybird.utils.Rectangle;
+import com.flappybird.views.IRender;
 
-public class SpriteRenderer {
-
+public class BasicRender implements IRender {
     private int programa;
     private int vao;
     private int vbo;
@@ -27,19 +22,14 @@ public class SpriteRenderer {
     private int uOffsetLocation;
     private int uScaleLocation;
     private int uColorLocation;
-    public int uTextureLocation;
     private int uProjectionLocation;
 
-    // Uniforms para el recorte de la textura (UVs)
-    private int uTexOffsetLocation;
-    private int uTexScaleLocation;
+    @Override
+    public void draw(float deltaTime) {
+        // Cielo.
+        GL11.glClearColor(0.52f, 0.80f, 0.92f, 1.0f);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
-    public void draw(
-        Texture texture,
-        Vector2 position,
-        Vector2 scale,
-        Rectangle sourceRect
-    ) {
         // Activar pipeline y malla base.
         GL20.glUseProgram(programa);
         GL30.glBindVertexArray(vao);
@@ -48,63 +38,34 @@ public class SpriteRenderer {
         float[] matrixBuffer = new float[16];
         projection.get(matrixBuffer);
         GL20.glUniformMatrix4fv(uProjectionLocation, false, matrixBuffer);
-        
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        texture.bind();
-        GL20.glUniform1i(uTextureLocation, 0); // sampler2D = unidad 0
-
-        // --- CALCULAR RECORTE UV (NUEVO) ---
-        // Necesitamos el tamaño total de la textura para normalizar los valores de 0 a 1
-        float texWidth = texture.getWidth();   // Ajusta según cómo obtengas el ancho en tu clase Texture
-        float texHeight = texture.getHeight(); // Ajusta según cómo obtengas el alto en tu clase Texture
-
-        // Mapeo: píxeles -> normalizado (0.0 a 1.0)
-        float uvX = sourceRect.X / texWidth;      // Asumiendo que tu Rectangle tiene .x
-        float uvY = sourceRect.Y / texHeight;     // Asumiendo que tu Rectangle tiene .y
-        float uvWidth = sourceRect.WIDTH / texWidth;
-        float uvHeight = sourceRect.HEIGHT / texHeight;
-
-        // Enviamos el recorte al shader
-        GL20.glUniform2f(uTexOffsetLocation, uvX, uvY);
-        GL20.glUniform2f(uTexScaleLocation, uvWidth, uvHeight);
-
-        GL20.glUniform4f(uColorLocation, 1f, 1f, 1f, 1f); // sin tinte
-        GL20.glUniform2f(uOffsetLocation, position.x(), position.y());
-        // Multiplicamos el tamaño base por la escala deseada
-        GL20.glUniform2f(uScaleLocation, sourceRect.WIDTH * scale.x(), sourceRect.HEIGHT * scale.y());
-        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6);
-        texture.unbind();
     }
 
-    // @Override
+    // Helper de dibujo parametrico de rectangulos.
+    public void dibujarRect(float x, float y, float ancho, float alto, float r, float g, float b) {
+        // Traslacion del quad.
+        GL20.glUniform2f(uOffsetLocation, x, y);
+        // Escala del quad.
+        GL20.glUniform2f(uScaleLocation, ancho, alto);
+        // Color.
+        GL20.glUniform3f(uColorLocation, r, g, b);
+        // Dibujar 2 triangulos.
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6);
+    }
+
+    @Override
     public void initialize() {
         crearShaders();
         crearQuadBase();
-
-        // Habilitar el canal Alpha para la transparencia
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
     private void crearShaders() {
         String vertexSrc = """
             #version 330 core
             layout (location = 0) in vec3 aPos;
-            layout (location = 1) in vec2 aTextCoord;
-
-            // Transformacion de geometria
             uniform vec2 uOffset;
             uniform vec2 uScale;
             uniform mat4 uProjection;
-
-            // Transformacion de textura
-            uniform vec2 uTexOffset;
-            uniform vec2 uTexScale;
-
-            out vec2 vTextCoord;
-
             void main() {
-                vTextCoord = (aTextCoord * uTexScale) + uTexOffset;
                 vec2 finalPos = aPos.xy * uScale + uOffset;
                 gl_Position = uProjection * vec4(finalPos, aPos.z, 1.0);
             }
@@ -113,13 +74,10 @@ public class SpriteRenderer {
         // Color solido por objeto.
         String fragmentSrc = """
             #version 330 core
-            in vec2 vTextCoord;
-
-            uniform sampler2D uTexture;
-            uniform vec4 uColor;
+            uniform vec3 uColor;
             out vec4 fragColor;
             void main() {
-                fragColor = texture(uTexture, vTextCoord) * uColor;
+                fragColor = vec4(uColor, 1.0);
             }
             """;
 
@@ -149,11 +107,7 @@ public class SpriteRenderer {
         uOffsetLocation = GL20.glGetUniformLocation(programa, "uOffset");
         uScaleLocation = GL20.glGetUniformLocation(programa, "uScale");
         uColorLocation = GL20.glGetUniformLocation(programa, "uColor");
-        uTextureLocation = GL20.glGetUniformLocation(programa, "uTexture");
         uProjectionLocation = GL20.glGetUniformLocation(programa, "uProjection");
-        uTexOffsetLocation = GL20.glGetUniformLocation(programa, "uTexOffset");
-        uTexScaleLocation = GL20.glGetUniformLocation(programa, "uTexScale");
-
         if (uOffsetLocation == -1 || uScaleLocation == -1 || uColorLocation == -1) {
             throw new RuntimeException("No se pudieron obtener uniforms del shader");
         }
@@ -170,22 +124,25 @@ public class SpriteRenderer {
         }
     }
 
+    /**
+     * Crea un rectangulo unitario centrado en origen:
+     * - Rango x,y de 0 a +1.
+     * - 2 triangulos (6 vertices).
+     * Cualquier objeto 2D se dibuja escalando y moviendo este quad.
+     */
     private void crearQuadBase() {
         float[] vertices = {
-            // X     Y     Z      U     V
-            0.0f, 0.0f, 0.0f,  0.0f, 0.0f,  // Arriba Izquierda
-            1.0f, 0.0f, 0.0f,  1.0f, 0.0f,  // Arriba Derecha
-            1.0f, 1.0f, 0.0f,  1.0f, 1.0f,  // Abajo Derecha
-            0.0f, 0.0f, 0.0f,  0.0f, 0.0f,
-            1.0f, 1.0f, 0.0f,  1.0f, 1.0f,
-            0.0f, 1.0f, 0.0f,  0.0f, 1.0f
+            0.0f, 0.0f, 0.0f, // Arriba Izquierda
+            1.0f, 0.0f, 0.0f, // Arriba Derecha
+            1.0f, 1.0f, 0.0f, // Abajo Derecha
+            0.0f, 0.0f, 0.0f,
+            1.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f
         };
 
         // VAO.
         vao = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vao);
-
-        int stride = 5 * Float.BYTES; // XYZ + UV = 5 floats
 
         // VBO.
         vbo = GL15.glGenBuffers();
@@ -197,19 +154,15 @@ public class SpriteRenderer {
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
 
         // Atributo posicion.
-        // Posición (location 0) — igual que antes
-        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, stride, 0);
+        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 3 * Float.BYTES, 0);
         GL20.glEnableVertexAttribArray(0);
-
-        // UV (location 1) — empieza después de los 3 floats de posición
-        GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, stride, 3 * Float.BYTES);
-        GL20.glEnableVertexAttribArray(1);
 
         // Desbind.
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         GL30.glBindVertexArray(0);
     }
 
+    @Override
     public void cleanUp() {
         GL30.glDeleteVertexArrays(vao);
         GL15.glDeleteBuffers(vbo);

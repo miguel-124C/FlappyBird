@@ -4,28 +4,28 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 
 import com.flappybird.controllers.InputManager;
-import com.flappybird.models.GameCore;
+import com.flappybird.core.ConfigCore;
+import com.flappybird.core.CoreManager;
+import com.flappybird.interfaces.enums.GameState;
 import com.flappybird.utils.Constants;
-import com.flappybird.views.ManagerRender;
-import com.flappybird.interfaces.*;;
+import com.flappybird.views.RenderManager;
 
 public class GameLoop {
 
     private long window;
 
     private final InputManager INPUT_MANAGER;
-    private final GameCore GAME_CORE;
-    private final ManagerRender MANAGER_RENDER;
+    private final CoreManager CORE_MANAGER;
+    private final RenderManager RENDER_MANAGER;
 
-    public GameLoop(InputManager inputManager, GameCore gameCore, ManagerRender mr){
+    public GameLoop(InputManager inputManager, CoreManager coreManager, RenderManager mr){
         this.INPUT_MANAGER = inputManager;
-        this.GAME_CORE = gameCore;
-        MANAGER_RENDER = mr;
+        this.CORE_MANAGER = coreManager;
+        RENDER_MANAGER = mr;
 
         init();
-        MANAGER_RENDER.initialize();
         loop();
-        MANAGER_RENDER.cleanUp();
+        RENDER_MANAGER.cleanUp();
         GLFW.glfwDestroyWindow(window);
     }
 
@@ -51,14 +51,17 @@ public class GameLoop {
         if (window == 0)
             throw new RuntimeException("No se pudo crear la ventana");
 
-        INPUT_MANAGER.initialize(window, GAME_CORE);
-
         // Contexto + VSync + mostrar.
         GLFW.glfwMakeContextCurrent(window);
         GLFW.glfwSwapInterval(1);
         GLFW.glfwShowWindow(window);
         // Cargar funciones OpenGL.
         GL.createCapabilities();
+
+        INPUT_MANAGER.initialize(window);
+        CORE_MANAGER.initialize();
+        RENDER_MANAGER.initialize();
+        // ConfigCore.getInstance().gameState = GameState.PLAYING;
     }
 
     private void loop(){
@@ -73,11 +76,8 @@ public class GameLoop {
             //     deltaTime = 0.033f;
 
             INPUT_MANAGER.update(deltaTime);
-
-            if (GAME_CORE.getState() == State.PLAYING) {
-                GAME_CORE.update(deltaTime);
-            }
-            MANAGER_RENDER.draw(null);
+            CORE_MANAGER.update(deltaTime);
+            RENDER_MANAGER.draw(deltaTime);
 
             // Presentar frame y leer eventos.
             GLFW.glfwSwapBuffers(window);
