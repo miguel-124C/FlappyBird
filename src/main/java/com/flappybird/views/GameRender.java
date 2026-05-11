@@ -1,6 +1,5 @@
 package com.flappybird.views;
 
-import com.flappybird.graphics.SpriteRenderer;
 import com.flappybird.models.World;
 
 public class GameRender implements IRender {
@@ -11,28 +10,18 @@ public class GameRender implements IRender {
         this.WORLD_GAME = world;
     }
 
-    public void draw(SpriteRenderer spriteRenderer){
-        drawBird();
-        drawPipes();
-    }
-
-    private void drawBird(){
-        var source = WORLD_GAME.Bird.sprite.sourceRectangle;
-    }
-
-    private void drawPipes(){
-        for (var pipe : WORLD_GAME.getPipes()) {
-            var source = pipe.sprite.sourceRectangle;
-        }
+    @Override
+    public void initialize() {
+        
     }
 
     @Override
-    public void initialize() {
-        throw new UnsupportedOperationException("Unimplemented method 'initialize'");
+    public void draw(float deltaTime){
+       
     }
 
     @Override
     public void cleanUp() {
-        throw new UnsupportedOperationException("Unimplemented method 'cleanUp'");
+        
     }
 }
