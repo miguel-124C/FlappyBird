@@ -1,36 +1,36 @@
 package com.flappybird;
 
 import com.flappybird.controllers.InputManager;
-import com.flappybird.factories.BirdFactory;
+import com.flappybird.core.ConfigCore;
+import com.flappybird.core.CoreManager;
+import com.flappybird.core.GameCore;
+import com.flappybird.core.MenuCore;
 import com.flappybird.factories.PipeFactory;
+import com.flappybird.graphics.BasicRender;
 import com.flappybird.graphics.GameLoop;
-import com.flappybird.models.BirdEntity;
-import com.flappybird.models.GameCore;
 import com.flappybird.models.World;
-import com.flappybird.utils.Vector2;
-import com.flappybird.views.ManagerRender;
+import com.flappybird.views.GameBasicRender;
+import com.flappybird.views.RenderManager;
 
 public class App {
 
     public static void main(String[] args) {
         System.out.println("Hello World!");
 
-        var bird = createBird();
-        var world = new World(bird);
-
+        ConfigCore.getInstance();
         var pipeFactory = new PipeFactory();
+        var world = new World(pipeFactory);
 
-        var gameCore = new GameCore(world, pipeFactory);
+        var gameCore = new GameCore(world);
+        var menuCore = new MenuCore();
+
+        var gameBasicRender = new GameBasicRender(gameCore.world, new BasicRender());
+        
         var inputManager = new InputManager();
+        var coreManager = new CoreManager(gameCore, menuCore);
+        var renderManager = new RenderManager(gameBasicRender);
 
-        var managerRender = new ManagerRender(gameCore, null);
-
-        new GameLoop(inputManager, gameCore, managerRender);
-    }
-
-    private static BirdEntity createBird(){
-        var birdFactory = new BirdFactory();
-        return birdFactory.create(new Vector2(500, 500), "fds");
+        new GameLoop(inputManager, coreManager, renderManager);
     }
     
 }
