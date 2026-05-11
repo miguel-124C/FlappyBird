@@ -1,4 +1,4 @@
-package com.flappybird.models;
+package com.flappybird.models.entities;
 
 import com.flappybird.interfaces.Entity;
 import com.flappybird.interfaces.Sprite;
