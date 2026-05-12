@@ -26,10 +26,6 @@ public class BasicRender implements IRender {
 
     @Override
     public void draw(float deltaTime) {
-        // Cielo.
-        GL11.glClearColor(0.52f, 0.80f, 0.92f, 1.0f);
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-
         // Activar pipeline y malla base.
         GL20.glUseProgram(programa);
         GL30.glBindVertexArray(vao);
