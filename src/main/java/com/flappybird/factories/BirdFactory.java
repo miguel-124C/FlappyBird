@@ -6,13 +6,22 @@ import com.flappybird.utils.*;
 
 public class BirdFactory {
 
-    public BirdEntity create(Vector2 position, String nameTexture){
-        var texture = new Texture(nameTexture);
+    private final SpriteAtlasJson SPRITE_ATLAS;
+    private final String TEXTURE_PATH;
 
-        var sourceRectangle = new Rectangle(264, 64, 18, 12);
-        var sprite = new Sprite(texture, sourceRectangle);
+    public BirdFactory(SpriteAtlasJson spriteAtlasJson){
+        this.SPRITE_ATLAS = spriteAtlasJson;
+        TEXTURE_PATH = SPRITE_ATLAS.getTexturePath();
+    }
 
-        return new BirdEntity(position, sprite, 2);
+    public BirdEntity create(Vector2 position){
+        var spAtlas = SPRITE_ATLAS.getSprite("BIRD");
+        var texture = new Texture(TEXTURE_PATH);
+
+        var sourceRectangle = new Rectangle(spAtlas.x(), spAtlas.y(), spAtlas.w(), spAtlas.h());
+        var sprite = new Sprite(texture, sourceRectangle, 0, spAtlas.totalFrames());
+
+        return new BirdEntity(position, sprite, spAtlas.totalFrames());
     }
 
 }

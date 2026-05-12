@@ -13,25 +13,31 @@ public class PipeFactory {
     private final float MIN_HEIGHT_PIPE;
 
     private final int LIMIT_WIDTH = Constants.screenWidth;
-    private final int LIMIT_HEGHT = Constants.screenHeight;
+    private final int LIMIT_HEIGHT = Constants.screenHeight;
 
     private final int WIDTH_PIPE = 48;
+    private final String TEXTURE_PATH;
 
-    private final Random random = new Random();
+    private final SpriteAtlasJson SPRITE_ATLAS;
+    private final Random RANDOM = new Random();
 
-    public PipeFactory(){
+    public PipeFactory(SpriteAtlasJson spriteAtlasJson){
+        this.SPRITE_ATLAS = spriteAtlasJson;
+        TEXTURE_PATH = SPRITE_ATLAS.getTexturePath();
         MIN_HEIGHT_PIPE = 50f;
-        MAX_HEIGHT_PIPE = Constants.screenHeight - GAP_BETWEEN_PIPES - MIN_HEIGHT_PIPE;
+        MAX_HEIGHT_PIPE = LIMIT_HEIGHT - GAP_BETWEEN_PIPES - MIN_HEIGHT_PIPE;
     }
 
     public PipeEntity spawnPipe() {
         var position = new Vector2(LIMIT_WIDTH, 0);
 
-        var texture = new Texture("assets/sprites.png");
-        var heightSource = random.nextFloat(MIN_HEIGHT_PIPE, MAX_HEIGHT_PIPE);
-        var sourceRectangle = new Rectangle(303, 0, WIDTH_PIPE, heightSource);
+        var spAtlas = SPRITE_ATLAS.getSprite("PIPE_TOP");
 
-        var sprite = new Sprite(texture, sourceRectangle);
+        var texture = new Texture(TEXTURE_PATH);
+        var heightSource = RANDOM.nextFloat(MIN_HEIGHT_PIPE, MAX_HEIGHT_PIPE);
+        var sourceRectangle = new Rectangle(spAtlas.x(), spAtlas.y(), WIDTH_PIPE, heightSource);
+
+        var sprite = new Sprite(texture, sourceRectangle, 0, spAtlas.totalFrames());
         return new PipeEntity(position, sprite);
     }
 
@@ -42,11 +48,13 @@ public class PipeFactory {
         var ySecondPipe = heightPipe + GAP_BETWEEN_PIPES;
         var position = new Vector2(pipeDimension.X, ySecondPipe);
 
-        var texture = new Texture("assets/sprites.png");
-        var heightSource = LIMIT_HEGHT - ySecondPipe;
-        var sourceRectangle = new Rectangle(330, 0, WIDTH_PIPE, heightSource);
+        var spAtlas = SPRITE_ATLAS.getSprite("PIPE_BOTTOM");
 
-        var sprite = new Sprite(texture, sourceRectangle);
+        var texture = new Texture(TEXTURE_PATH);
+        var heightSource = LIMIT_HEIGHT - ySecondPipe;
+        var sourceRectangle = new Rectangle(spAtlas.x(), spAtlas.y(), WIDTH_PIPE, heightSource);
+
+        var sprite = new Sprite(texture, sourceRectangle, 0, spAtlas.totalFrames());
         return new PipeEntity(position, sprite);
     }
 
