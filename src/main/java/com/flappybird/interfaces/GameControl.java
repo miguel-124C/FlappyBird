@@ -6,9 +6,13 @@ public class GameControl {
 
     public boolean prevKey;
 
-    public GameControl(int jump, int pause){
+    private GameControl(int jump, int pause){
         this.jump = jump;
         this.pause = pause;
+    }
+
+    public static GameControl createControl(int jump, int pause){
+        return new GameControl(jump, pause);
     }
 
     public void changeControlJump(int key){
