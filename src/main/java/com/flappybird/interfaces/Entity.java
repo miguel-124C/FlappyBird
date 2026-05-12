@@ -9,7 +9,7 @@ public abstract class Entity {
     public Sprite sprite;
 
     public Rectangle getDimensions(){
-        var sourceRectangle = sprite.sourceRectangle;
+        var sourceRectangle = sprite.SOURCET_RECTANGLE;
 
         return
             new Rectangle(position.x(), position.y(), sourceRectangle.WIDTH, sourceRectangle.HEIGHT);
