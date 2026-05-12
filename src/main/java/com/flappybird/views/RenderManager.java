@@ -1,31 +1,36 @@
 package com.flappybird.views;
 
+import org.lwjgl.opengl.GL11;
+
 import com.flappybird.core.ConfigCore;
 
 public class RenderManager implements IRender {
 
-    private final MenuRender menuRender;
-    private final IRender gameRender;
+    private final MenuRender MENU_RENDER;
+    private final IRender GAME_RENDER;
 
-    public RenderManager(IRender gameRender){
-        menuRender = new MenuRender();
-        this.gameRender = gameRender;
+    public RenderManager(MenuRender menuRender, IRender gameRender){
+        this.MENU_RENDER = menuRender;
+        this.GAME_RENDER = gameRender;
     }
 
     @Override
     public void draw(float deltaTime) {
+        // Cielo.
+        GL11.glClearColor(0.52f, 0.80f, 0.92f, 1.0f);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
         switch (ConfigCore.getInstance().gameState) {
             case MENU:
-                menuRender.draw(deltaTime);
+                MENU_RENDER.draw(deltaTime);
                 break;
             case PLAYING:
-                gameRender.draw(deltaTime);
+                GAME_RENDER.draw(deltaTime);
             case PAUSE:
                 // Draw pause
-                gameRender.draw(deltaTime);
+                GAME_RENDER.draw(deltaTime);
             case GAME_OVER:
                 // Draw Gameover
-                gameRender.draw(deltaTime);
+                GAME_RENDER.draw(deltaTime);
             default:
                 break;
         }
@@ -33,14 +38,14 @@ public class RenderManager implements IRender {
 
     @Override
     public void initialize() {
-        menuRender.initialize();
-        gameRender.initialize();
+        MENU_RENDER.initialize();
+        GAME_RENDER.initialize();
     }
 
     @Override
     public void cleanUp() {
-        menuRender.cleanUp();
-        gameRender.cleanUp();
+        MENU_RENDER.cleanUp();
+        GAME_RENDER.cleanUp();
     }
 
 }

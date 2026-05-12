@@ -1,29 +1,36 @@
 package com.flappybird.views;
 
-import com.flappybird.factories.BirdFactory;
+import com.flappybird.core.MenuCore;
 import com.flappybird.graphics.SpriteRenderer;
 import com.flappybird.utils.Rectangle;
-import com.flappybird.utils.Texture;
 import com.flappybird.utils.Vector2;
 
 public class MenuRender implements IRender {
 
-    private Texture birdTexture;
+    private final MenuCore MENU;
     private final SpriteRenderer RENDER = new SpriteRenderer();
-    private final BirdFactory BIRD_FACTORY = new BirdFactory();
+
+    public MenuRender(MenuCore menuCore){
+        MENU = menuCore;
+    }
 
     @Override
     public void draw(float deltaTime) {
-        var scale = new Vector2(3,3);
-        var sourceRect = new Rectangle(264, 64, 18, 12);
-        RENDER.draw(birdTexture, new Vector2(0 ,0), scale, sourceRect);
+        for (var entity : MENU.getEntities()) {
+            var dimension = entity.getDimensions();
+            var scale = new Vector2(3, 3);
+            var sprite = entity.sprite;
+            var sourceRectangle = sprite.SOURCET_RECTANGLE;
+
+            var y = sourceRectangle.Y + (sprite.getCurrentFrame() * dimension.HEIGHT * scale.y());
+            var sourceRec = new Rectangle(sourceRectangle.X, y, dimension.WIDTH, dimension.HEIGHT);
+            RENDER.draw(sprite.TEXTURE, entity.position, scale, sourceRec);
+        }
     }
 
     @Override
     public void initialize() {
         RENDER.initialize();
-        BIRD_FACTORY.create(new Vector2(500,500), "assets/sprites.png");
-        birdTexture = new Texture("assets/sprites.png");
     }
 
     @Override
