@@ -10,7 +10,6 @@ import com.flappybird.factories.DefaultEntityFactory;
 import com.flappybird.factories.PipeFactory;
 import com.flappybird.graphics.BasicRender;
 import com.flappybird.graphics.GameLoop;
-import com.flappybird.interfaces.GameControl;
 import com.flappybird.models.World;
 import com.flappybird.utils.SpriteAtlasJson;
 import com.flappybird.views.GameBasicRender;

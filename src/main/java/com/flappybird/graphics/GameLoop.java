@@ -4,9 +4,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 
 import com.flappybird.controllers.InputManager;
-import com.flappybird.core.ConfigCore;
 import com.flappybird.core.CoreManager;
-import com.flappybird.interfaces.enums.GameState;
 import com.flappybird.utils.Constants;
 import com.flappybird.views.RenderManager;
 
