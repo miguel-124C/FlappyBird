@@ -15,7 +15,7 @@ public class Texture {
     private int height;
 
     public Texture(String pathImg) {
-        String fullPath = resolvePath(pathImg);
+        String fullPath = Global.resolvePath(pathImg);
         try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer w = stack.mallocInt(1);
             IntBuffer h = stack.mallocInt(1);
@@ -49,19 +49,6 @@ public class Texture {
 
             STBImage.stbi_image_free(datos);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-        }
-    }
-
-    private static String resolvePath(String path) {
-        var url = Texture.class.getClassLoader().getResource(path);
-        if (url == null)
-            throw new RuntimeException("Recurso no encontrado en classpath: " + path);
-        
-        try {
-            // URI decodifica automáticamente %20 → espacio
-            return java.nio.file.Paths.get(url.toURI()).toString();
-        } catch (java.net.URISyntaxException e) {
-            throw new RuntimeException("Ruta inválida: " + path, e);
         }
     }
 
