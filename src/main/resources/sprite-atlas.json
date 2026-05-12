@@ -1,0 +1,76 @@
+{
+    "texturePath": "assets/sprites.png",
+    "sprites": [
+        {
+            "name": "BIRD",
+            "x": 263,
+            "y": 64,
+            "w": 18,
+            "h": 12,
+            "totalFrames": 2
+        },{
+            "name": "PIPE_TOP",
+            "x": 303,
+            "y": 0,
+            "w": 48,
+            "h": 135,
+            "totalFrames": 1
+        },{
+            "name": "PIPE_BOTTOM",
+            "x": 330,
+            "y": 0,
+            "w": 48,
+            "h": 121,
+            "totalFrames": 1
+        },{
+            "name": "COIN",
+            "x": 302,
+            "y": 137,
+            "w": 22,
+            "h": 22,
+            "totalFrames": 1
+        },{
+            "name": "TITLE_MENU",
+            "x": 146,
+            "y": 173,
+            "w": 96,
+            "h": 22,
+            "totalFrames": 1
+        },{
+            "name": "TITLE_GAME_OVER",
+            "x": 146,
+            "y": 199,
+            "w": 94,
+            "h": 19,
+            "totalFrames": 1
+        },{
+            "name": "BTN_MENU",
+            "x": 245,
+            "y": 118,
+            "w": 40,
+            "h": 14,
+            "totalFrames": 1
+        },{
+            "name": "BTN_OK",
+            "x": 245,
+            "y": 134,
+            "w": 40,
+            "h": 14,
+            "totalFrames": 1
+        },{
+            "name": "BTN_START",
+            "x": 241,
+            "y": 213,
+            "w": 40,
+            "h": 14,
+            "totalFrames": 1
+        },{
+            "name": "GAME_MODE",
+            "x": 0,
+            "y": 0,
+            "w": 91,
+            "h": 43,
+            "totalFrames": 2
+        }
+    ]
+}
