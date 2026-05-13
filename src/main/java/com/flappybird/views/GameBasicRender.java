@@ -2,6 +2,7 @@ package com.flappybird.views;
 
 import com.flappybird.core.ConfigCore;
 import com.flappybird.graphics.BasicRender;
+import com.flappybird.interfaces.enums.PlayerState;
 import com.flappybird.models.World;
 
 public class GameBasicRender implements IRender {
@@ -24,6 +25,10 @@ public class GameBasicRender implements IRender {
         }
 
         for (var player : ConfigCore.getInstance().getPlayers()) {
+            if (player.state == PlayerState.OUT_SCREEN){
+                System.out.println("Esta fuera de pantalla");
+                continue;
+            }
             var dimension = player.BIRD.getDimensions();
             var color = player.COLOR;
             RENDER.dibujarRect(dimension.X, dimension.Y, dimension.WIDTH, dimension.HEIGHT, color.R, color.G, color.B);

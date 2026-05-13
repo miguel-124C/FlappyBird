@@ -18,13 +18,24 @@ public class MenuRender implements IRender {
     public void draw(float deltaTime) {
         for (var entity : MENU.getEntities()) {
             var dimension = entity.getDimensions();
-            var scale = new Vector2(3, 3);
             var sprite = entity.sprite;
             var sourceRectangle = sprite.SOURCET_RECTANGLE;
 
-            var y = sourceRectangle.Y + (sprite.getCurrentFrame() * dimension.HEIGHT * scale.y());
-            var sourceRec = new Rectangle(sourceRectangle.X, y, dimension.WIDTH, dimension.HEIGHT);
-            RENDER.draw(sprite.TEXTURE, entity.position, scale, sourceRec);
+            var x = sourceRectangle.X;
+            var y = sourceRectangle.Y;
+            switch (sprite.getAnimDirection()) {
+                case DOWN:
+                    y = sourceRectangle.Y + (sprite.getCurrentFrame() * dimension.HEIGHT * entity.scale.y());
+                    break;
+                case LEFT:
+                    x = sourceRectangle.X + (sprite.getCurrentFrame() * dimension.WIDTH * entity.scale.x());
+                    break;
+                default:
+                    break;
+            }
+
+            var sourceRec = new Rectangle(x, y, dimension.WIDTH, dimension.HEIGHT);
+            RENDER.draw(sprite.TEXTURE, entity.position, entity.scale, sourceRec);
         }
     }
 
