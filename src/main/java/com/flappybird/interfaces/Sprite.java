@@ -7,6 +7,7 @@ public class Sprite {
     public final Rectangle SOURCET_RECTANGLE;
     public final int TOTAL_FRAMES;
     private int currentFrame;
+    private Direction animationDirection = Direction.DOWN;
 
     public Sprite(Texture texture, Rectangle sourceRectangle, int currentFrame, int totalFrames) {
         TEXTURE = texture;
@@ -15,16 +16,34 @@ public class Sprite {
         this.currentFrame = currentFrame;
     }
 
+    public Sprite(Texture texture, Rectangle sourceRectangle, int totalFrames) {
+        this(texture, sourceRectangle, 0, totalFrames);
+    }
+
+    public Sprite(Texture texture, Rectangle sourceRectangle, int currentFrame, int totalFrames, Direction animationDirection) {
+        this(texture, sourceRectangle, currentFrame, totalFrames);
+        this.animationDirection = animationDirection;
+    }
+
+    public Sprite(Texture texture, Rectangle sourceRectangle, int totalFrames, Direction animationDirection) {
+        this(texture, sourceRectangle, 0, totalFrames);
+        this.animationDirection = animationDirection;
+    }
+
     public void changeFrame(int indexFrame){
-        if (indexFrame > TOTAL_FRAMES - 1){
+        if (indexFrame > TOTAL_FRAMES - 1)
             currentFrame = 0;
-        } else if(indexFrame < 0){
+        else if(indexFrame < 0)
             currentFrame = TOTAL_FRAMES - 1;
-        }
-        currentFrame = indexFrame;
+        else
+            currentFrame = indexFrame;
     }
 
     public int getCurrentFrame(){
         return currentFrame;
+    }
+
+    public Direction getAnimDirection(){
+        return animationDirection;
     }
 }
