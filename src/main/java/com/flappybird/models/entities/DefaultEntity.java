@@ -10,4 +10,7 @@ public class DefaultEntity extends Entity {
         super(position, sprite);
     }
     
+    public DefaultEntity(Vector2 position, Sprite sprite, Vector2 scale) {
+        super(position, sprite, scale);
+    }
 }

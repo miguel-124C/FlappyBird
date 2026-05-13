@@ -12,9 +12,12 @@ public class BirdEntity extends Entity {
     private final float MAX_FALL_SPEED = 500f;    // Límite de caída rápido
     private float speedY = 0;
 
-    public BirdEntity(Vector2 position, Sprite sprite, int totalFrame){
+    public BirdEntity(Vector2 position, Sprite sprite){
         super(position, sprite);
-        // this.totalFrame = totalFrame;
+    }
+
+    public BirdEntity(Vector2 position, Sprite sprite, Vector2 scale){
+        super(position, sprite, scale);
     }
 
     public void jump(float deltaTime){
@@ -32,6 +35,10 @@ public class BirdEntity extends Entity {
 
         var newY = dimension.Y + (speedY * deltaTime);
         this.position = new Vector2(dimension.X, newY);
+    }
+
+    public float getMaxFallSpeed(){
+        return MAX_FALL_SPEED;
     }
 
 }
