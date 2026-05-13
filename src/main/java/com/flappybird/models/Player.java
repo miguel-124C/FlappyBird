@@ -7,18 +7,22 @@ import com.flappybird.utils.Color;
 
 public class Player {
 
+    private static int nextId = 0;
+    private final int id;
     public final Color COLOR;
     public final BirdEntity BIRD;
     public PlayerState state = PlayerState.LIVE;
     public final GameControl GAME_CONTROL;
+    public float fallVelocity = 0f;
 
-    private int level = 1;
     private int score = 0;
 
     public Player(BirdEntity bird, GameControl gc, Color color){
         this.BIRD = bird;
         this.GAME_CONTROL = gc;
         this.COLOR = color;
+        id = nextId;
+        nextId++;
     }
 
     public void jump(){
@@ -27,16 +31,10 @@ public class Player {
 
     public void addScore(int score){
         this.score += score;
-        System.out.println(score);
-        this.level = (int) Math.floor((this.score / 100) + 1);
     }
 
     public void changeState(PlayerState state){
         this.state = state;
-    }
-
-    public int getLevel(){
-        return level;
     }
 
     public int getScore(){
@@ -45,5 +43,9 @@ public class Player {
 
     public PlayerState getState(){
         return state;
+    }
+
+    public int getId(){
+        return id;
     }
 }

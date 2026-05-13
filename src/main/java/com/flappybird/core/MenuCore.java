@@ -23,6 +23,7 @@ public class MenuCore implements ICore {
     private final DefaultEntityFactory DEFAULT_FACTORY;
 
     private Entity menuTitle;
+    private Entity bird;
     private Entity gameModeSelect;
     private List<Entity> entities = new ArrayList<>();
 
@@ -40,11 +41,16 @@ public class MenuCore implements ICore {
         var scale = new Vector2(3,3);
         menuTitle = DEFAULT_FACTORY.createEntityInCenter("TITLE_MENU", "assets/sprites.png", scale);
 
+        var dimMenu = menuTitle.getDimensions();
+        var positionBird = new Vector2(dimMenu.X + (dimMenu.WIDTH * menuTitle.scale.x()) + 10, dimMenu.Y);
+        bird = BIRD_FACTORY.create(positionBird, scale);
+
         var menuTitleDim = menuTitle.getDimensions();
         var positionGameMode = new Vector2(menuTitleDim.X, menuTitleDim.Y + menuTitleDim.HEIGHT + 100);
-        gameModeSelect = DEFAULT_FACTORY.createEntity(positionGameMode, "GAME_MODE", "assets/selection-mode-sprite.png");
+        gameModeSelect = DEFAULT_FACTORY.createEntity(positionGameMode, "GAME_MODE", "assets/selection-mode-sprite.png", scale);
         
         entities.add(menuTitle);
+        entities.add(bird);
         entities.add(gameModeSelect);
     }
 
@@ -52,6 +58,7 @@ public class MenuCore implements ICore {
     public void update(float deltaTime) {
         progress += deltaTime;
         var menuTitlePos = menuTitle.position;
+        var birdPos = bird.position;
 
         if (progress >= seconds) {
             amountMove = amountMove * -1;
@@ -59,6 +66,7 @@ public class MenuCore implements ICore {
         }
 
         menuTitle.position = new Vector2(menuTitlePos.x(), menuTitlePos.y() + amountMove);
+        bird.position = new Vector2(birdPos.x(), birdPos.y() + amountMove);
     }
 
     public void changeGameMode(Direction direction){
@@ -83,21 +91,17 @@ public class MenuCore implements ICore {
     }
 
     public void startGame(){
-        var colorOne = Color.blue();
         var configCore = ConfigCore.getInstance();
-        var birdOne = BIRD_FACTORY.create(new Vector2(100, 500));
         var controlOne = GameControl.createControl(GLFW.GLFW_KEY_SPACE, GLFW.GLFW_KEY_ESCAPE);
-        var playerOne = new Player(birdOne, controlOne, colorOne);
+        var playerOne = createPlayer(new Vector2(100, 500), Color.blue(), controlOne);
         
         switch (configCore.playMode) {
             case SINGLE_PLAYER:
                 configCore.addPlayer(playerOne);
                 break;
             case MULTI_PLAYER:
-                var colorTwo = Color.orange();
-                var birdTwo = BIRD_FACTORY.create(new Vector2(600, 500));
                 var controlTwo = GameControl.createControl(GLFW.GLFW_KEY_W, GLFW.GLFW_KEY_BACKSPACE);
-                var playerTwo = new Player(birdTwo, controlTwo, colorTwo);
+                var playerTwo = createPlayer(new Vector2(600, 500), Color.orange(), controlTwo);
                 configCore.addPlayer(playerOne);
                 configCore.addPlayer(playerTwo);
                 break;
@@ -106,6 +110,12 @@ public class MenuCore implements ICore {
         }
 
         configCore.gameState = GameState.PLAYING;
+    }
+
+    private Player createPlayer(Vector2 position, Color color, GameControl gameControl){
+        var sacale = new Vector2(4, 4);
+        var bird = BIRD_FACTORY.create(position, sacale);
+        return new Player(bird, gameControl, color);
     }
 
     @Override
