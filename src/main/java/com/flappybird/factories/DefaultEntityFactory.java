@@ -12,14 +12,14 @@ public class DefaultEntityFactory {
         SPRITE_ATLAS = spriteAtlasJson;
     }
 
-    public DefaultEntity createEntity(Vector2 position, String nameSprite, String nameTexture){
+    public DefaultEntity createEntity(Vector2 position, String nameSprite, String nameTexture, Vector2 scale){
         var spAtlas = SPRITE_ATLAS.getSprite(nameSprite);
 
         var texture = new Texture(nameTexture);
         var sourceRectangle = new Rectangle(spAtlas.x(), spAtlas.y(), spAtlas.w(), spAtlas.h());
 
         var sprite = new Sprite(texture, sourceRectangle, 0, spAtlas.totalFrames());
-        return new DefaultEntity(position, sprite);
+        return new DefaultEntity(position, sprite, scale);
     }
 
     public DefaultEntity createEntityInCenter(String nameSprite, String nameTexture, Vector2 scale){
@@ -33,6 +33,6 @@ public class DefaultEntityFactory {
         var position = new Vector2(xCenter, yCenter);
 
         var sprite = new Sprite(texture, sourceRectangle, 0, spAtlas.totalFrames());
-        return new DefaultEntity(position, sprite);
+        return new DefaultEntity(position, sprite, scale);
     }
 }
