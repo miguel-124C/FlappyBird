@@ -6,6 +6,7 @@ import java.util.List;
 import com.flappybird.factories.PipeFactory;
 import com.flappybird.models.entities.PipeEntity;
 import com.flappybird.utils.Constants;
+import com.flappybird.utils.Rectangle;
 
 public class World {
 
@@ -16,10 +17,7 @@ public class World {
         this.pipeFactory = pipeFactory;
     }
 
-    public boolean hasCollision(Player player){
-        var bird = player.BIRD;
-        var dimension = bird.getDimensions();
-
+    public boolean hasCollision(Rectangle dimension){
         for (var pipe : pipes){
             var dimensionPipe = pipe.getDimensions();
             
@@ -32,28 +30,19 @@ public class World {
         return (outScreenX || outScreenY);
     }
 
-    public void moveAllPipes(float time){
-        for (int i = 0; i < pipes.size(); i++) {
-            var pipe = pipes.get(i);
+    public void checkPipeBehind(PipeEntity pipe, Player player){
+        if (pipe.isBehind && pipe.playersId.contains(player.getId())) return;
+        var dimensionPipe = pipe.getDimensions();
+        var bird = player.BIRD;
 
-            pipe.moveLeft(time);
-
-            checkPipeBehind(pipe);
-            checkPipeOutScreen(pipe, i);
+        if (bird.position.x() > dimensionPipe.X + dimensionPipe.WIDTH){
+            pipe.isBehind = true;
+            pipe.playersId.add(player.getId());
+            player.addScore(pipe.VALUE);
         }
     }
 
-    private void checkPipeBehind(PipeEntity pipe){
-        if (pipe.isBehind) return;
-        var dimensionPipe = pipe.getDimensions();
-            
-        // if (Bird.position.x() > dimensionPipe.X + dimensionPipe.WIDTH){
-        //     pipe.isBehind = true;
-            
-        // }
-    }
-
-    private void checkPipeOutScreen(PipeEntity pipe, int index){
+    public void checkPipeOutScreen(PipeEntity pipe, int index){
         var dimension = pipe.getDimensions();
         if (dimension.X + dimension.WIDTH < 0) {
             pipes.remove(index);
