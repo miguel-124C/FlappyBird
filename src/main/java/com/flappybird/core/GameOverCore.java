@@ -33,10 +33,15 @@ public class GameOverCore implements ICore {
     public void update(float deltaTime) {
         timeEnlapsed += deltaTime;
         if (timeEnlapsed >= timeToGoMenu) {
-            ConfigCore.getInstance().reset();
-            WORLD.getPipes().clear();
+            resetGame();
             timeEnlapsed = 0;
         }
+    }
+
+    public void resetGame(){
+        ConfigCore.getInstance().reset();
+        WORLD.getPipes().clear();
+        System.out.println("Reset game gameovercore");
     }
 
     public List<Entity> getEntities(){

@@ -30,7 +30,6 @@ public class ConfigCore {
 
     public void reset(){
         maxScore = 0;
-        playMode = PlayModes.SINGLE_PLAYER;
         gameState = GameState.MENU;
         players.clear();
     }

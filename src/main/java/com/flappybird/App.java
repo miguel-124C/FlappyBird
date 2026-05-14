@@ -31,7 +31,7 @@ public class App {
         var menuRender = new MenuRender(menuCore, spriteRender);
         var gameOverRender = new GameOverRender(gameOverCore, basicRender, spriteRender);
         
-        var inputManager = new InputManager(menuCore);
+        var inputManager = new InputManager(menuCore, gameOverCore);
         var coreManager = new CoreManager(gameCore, menuCore, gameOverCore);
         var renderManager = new RenderManager(menuRender, gameBasicRender, gameOverRender);
 

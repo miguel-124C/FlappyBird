@@ -17,7 +17,6 @@ public class MenuCore implements ICore {
 
     public boolean isPrevKeyDown;
     public boolean isPrevKeyUp;
-    public boolean isPrevKeyEnter;
 
     private final BirdFactory BIRD_FACTORY;
     private final DefaultEntityFactory DEFAULT_FACTORY;

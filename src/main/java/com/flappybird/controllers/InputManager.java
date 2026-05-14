@@ -3,6 +3,7 @@ package com.flappybird.controllers;
 import org.lwjgl.glfw.GLFW;
 
 import com.flappybird.core.ConfigCore;
+import com.flappybird.core.GameOverCore;
 import com.flappybird.core.MenuCore;
 import com.flappybird.utils.Direction;
 
@@ -10,9 +11,13 @@ public class InputManager {
 
     private long window;
     private final MenuCore MENU;
+    private final GameOverCore GAMEOVER_CORE;
+
+    private boolean isPrevKeyEnter = false;
     
-    public InputManager(MenuCore menuCore){
+    public InputManager(MenuCore menuCore, GameOverCore gameOverCore){
         MENU = menuCore;
+        GAMEOVER_CORE = gameOverCore;
     }
 
     public void initialize(long window){
@@ -22,18 +27,23 @@ public class InputManager {
     public void update(float deltaTime){
         switch (ConfigCore.getInstance().gameState) {
             case PLAYING:
-                handleInGame(deltaTime);
+                handleInGame();
                 break;
             case MENU:
-                handleInMenu(deltaTime);
+                handleInMenu();
+                break;
             case PAUSE:
-                handleInPause(deltaTime);
+                handleInPause();
+                break;
+            case GAME_OVER:
+                handleInGameOver();
+                break;
             default:
                 break;
         }
     }
 
-    public void handleInGame(float deltaTime){
+    public void handleInGame(){
         // if (isPressed(GLFW.GLFW_KEY_ESCAPE))
         //     GLFW.glfwSetWindowShouldClose(window, true);
 
@@ -50,7 +60,7 @@ public class InputManager {
         }
     }
 
-    private void handleInMenu(float deltaTime){
+    private void handleInMenu(){
         if (isPressed(GLFW.GLFW_KEY_ESCAPE))
             GLFW.glfwSetWindowShouldClose(window, true);
 
@@ -64,16 +74,24 @@ public class InputManager {
         if (keyDownNow && !MENU.isPrevKeyDown)
             MENU.changeGameMode(Direction.DOWN);
 
-        if (keyEnterNow)
+        if (keyEnterNow && !isPrevKeyEnter)
             MENU.startGame();
 
         MENU.isPrevKeyUp = keyUpNow;
         MENU.isPrevKeyDown = keyDownNow;
-        MENU.isPrevKeyEnter = keyEnterNow;
+        isPrevKeyEnter = keyEnterNow;
     }
 
-    private void handleInPause(float deltaTime){
+    private void handleInPause(){
         
+    }
+
+    private void handleInGameOver(){
+        var keyEnterNow = isPressed(GLFW.GLFW_KEY_ENTER);
+        if (keyEnterNow && !isPrevKeyEnter)
+            GAMEOVER_CORE.resetGame();
+
+        isPrevKeyEnter = keyEnterNow;
     }
 
     private boolean isPressed(int key){
