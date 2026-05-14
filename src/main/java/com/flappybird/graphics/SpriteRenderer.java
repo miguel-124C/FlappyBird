@@ -1,21 +1,19 @@
 package com.flappybird.graphics;
 
-import com.flappybird.utils.Texture;
 import com.flappybird.utils.Vector2;
 
 import java.nio.FloatBuffer;
 
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import com.flappybird.interfaces.Sprite;
 import com.flappybird.utils.Constants;
-import com.flappybird.utils.Rectangle;
 
 public class SpriteRenderer {
 
@@ -29,26 +27,33 @@ public class SpriteRenderer {
     private int uColorLocation;
     public int uTextureLocation;
     private int uProjectionLocation;
+    private int uRotationLocation;
 
     // Uniforms para el recorte de la textura (UVs)
     private int uTexOffsetLocation;
     private int uTexScaleLocation;
 
     public void draw(
-        Texture texture,
         Vector2 position,
-        Vector2 scale,
-        Rectangle sourceRect
+        Sprite sprite,
+        Vector2 scale
     ) {
         // Activar pipeline y malla base.
         GL20.glUseProgram(programa);
         GL30.glBindVertexArray(vao);
+
+        // Desactivar estados que puedan ocultar la UI
+        GL11.glDisable(GL11.GL_DEPTH_TEST); // Ignorar la profundidad (dibujar por encima de todo)
+        GL11.glDisable(GL11.GL_CULL_FACE);  // Dibujar ambas caras de los triángulos
 
         Matrix4f projection = new Matrix4f().ortho(0, Constants.screenWidth, Constants.screenHeight, 0, -1, 1); // 0,0 arriba izquierda
         float[] matrixBuffer = new float[16];
         projection.get(matrixBuffer);
         GL20.glUniformMatrix4fv(uProjectionLocation, false, matrixBuffer);
         
+        var texture = sprite.TEXTURE;
+        var sourceRect = sprite.SOURCET_RECTANGLE;
+
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         texture.bind();
         GL20.glUniform1i(uTextureLocation, 0); // sampler2D = unidad 0
@@ -70,6 +75,10 @@ public class SpriteRenderer {
 
         GL20.glUniform4f(uColorLocation, 1f, 1f, 1f, 1f); // sin tinte
         GL20.glUniform2f(uOffsetLocation, position.x(), position.y());
+
+        float rotationInRadians = (float)Math.toRadians(sprite.rotation);
+        GL20.glUniform1f(uRotationLocation, rotationInRadians);
+
         // Multiplicamos el tamaño base por la escala deseada
         GL20.glUniform2f(uScaleLocation, sourceRect.WIDTH * scale.x(), sourceRect.HEIGHT * scale.y());
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6);
@@ -100,15 +109,41 @@ public class SpriteRenderer {
             // Transformacion de textura
             uniform vec2 uTexOffset;
             uniform vec2 uTexScale;
+            uniform float uRotation;
 
             out vec2 vTextCoord;
 
             void main() {
                 vTextCoord = (aTextCoord * uTexScale) + uTexOffset;
-                vec2 finalPos = aPos.xy * uScale + uOffset;
+
+                float c = cos(uRotation);
+                float s = sin(uRotation);
+                mat2 rotMat = mat2(c, -s, s, c);
+                vec2 pos = rotMat * aPos.xy;
+
+                vec2 finalPos = pos * uScale + uOffset;
                 gl_Position = uProjection * vec4(finalPos, aPos.z, 1.0);
             }
             """;
+
+        // void main() {
+        //     vTextCoord = (aTextCoord * uTexScale) + uTexOffset;
+            
+        //     // 1. Mover el centro del quad (0.5, 0.5) al origen (0,0)
+        //     vec2 pos = aPos.xy - vec2(0.5, 0.5);
+            
+        //     // 2. Calcular la matriz de rotación 2D
+        //     float c = cos(uRotation);
+        //     float s = sin(uRotation);
+        //     mat2 rotMat = mat2(c, -s, s, c);
+            
+        //     // 3. Aplicar rotación y devolver el centro a su lugar
+        //     pos = (rotMat * pos) + vec2(0.5, 0.5);
+            
+        //     // 4. Aplicar escala y posición final
+        //     vec2 finalPos = pos * uScale + uOffset;
+        //     gl_Position = uProjection * vec4(finalPos, aPos.z, 1.0);
+        // }
 
         // Color solido por objeto.
         String fragmentSrc = """
@@ -153,6 +188,7 @@ public class SpriteRenderer {
         uProjectionLocation = GL20.glGetUniformLocation(programa, "uProjection");
         uTexOffsetLocation = GL20.glGetUniformLocation(programa, "uTexOffset");
         uTexScaleLocation = GL20.glGetUniformLocation(programa, "uTexScale");
+        uRotationLocation = GL20.glGetUniformLocation(programa, "uRotation");
 
         if (uOffsetLocation == -1 || uScaleLocation == -1 || uColorLocation == -1) {
             throw new RuntimeException("No se pudieron obtener uniforms del shader");
@@ -214,6 +250,5 @@ public class SpriteRenderer {
         GL30.glDeleteVertexArrays(vao);
         GL15.glDeleteBuffers(vbo);
         GL20.glDeleteProgram(programa);
-        GLFW.glfwTerminate();
     }
 }

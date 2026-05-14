@@ -4,13 +4,14 @@ import java.nio.FloatBuffer;
 
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import com.flappybird.utils.Color;
 import com.flappybird.utils.Constants;
+import com.flappybird.utils.Rectangle;
 import com.flappybird.views.IRender;
 
 public class BasicRender implements IRender {
@@ -30,6 +31,14 @@ public class BasicRender implements IRender {
         GL20.glUseProgram(programa);
         GL30.glBindVertexArray(vao);
 
+        // Desactivar estados que puedan ocultar la UI
+        GL11.glDisable(GL11.GL_DEPTH_TEST); // Ignorar la profundidad (dibujar por encima de todo)
+        GL11.glDisable(GL11.GL_CULL_FACE);  // Dibujar ambas caras de los triángulos
+
+        // Activar la transparencia
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
         Matrix4f projection = new Matrix4f().ortho(0, Constants.screenWidth, Constants.screenHeight, 0, -1, 1); // 0,0 arriba izquierda
         float[] matrixBuffer = new float[16];
         projection.get(matrixBuffer);
@@ -37,13 +46,13 @@ public class BasicRender implements IRender {
     }
 
     // Helper de dibujo parametrico de rectangulos.
-    public void dibujarRect(float x, float y, float ancho, float alto, float r, float g, float b) {
+    public void dibujarRect(Rectangle souRectangle, Color color) {
         // Traslacion del quad.
-        GL20.glUniform2f(uOffsetLocation, x, y);
+        GL20.glUniform2f(uOffsetLocation, souRectangle.X, souRectangle.Y);
         // Escala del quad.
-        GL20.glUniform2f(uScaleLocation, ancho, alto);
+        GL20.glUniform2f(uScaleLocation, souRectangle.WIDTH, souRectangle.HEIGHT);
         // Color.
-        GL20.glUniform3f(uColorLocation, r, g, b);
+        GL20.glUniform4f(uColorLocation, color.R, color.G, color.B, color.ALPHA);
         // Dibujar 2 triangulos.
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6);
     }
@@ -70,10 +79,10 @@ public class BasicRender implements IRender {
         // Color solido por objeto.
         String fragmentSrc = """
             #version 330 core
-            uniform vec3 uColor;
+            uniform vec4 uColor;
             out vec4 fragColor;
             void main() {
-                fragColor = vec4(uColor, 1.0);
+                fragColor = uColor;
             }
             """;
 
@@ -163,6 +172,5 @@ public class BasicRender implements IRender {
         GL30.glDeleteVertexArrays(vao);
         GL15.glDeleteBuffers(vbo);
         GL20.glDeleteProgram(programa);
-        GLFW.glfwTerminate();
     }
 }

@@ -38,7 +38,7 @@ public class GameLoop {
         // Config de ventana/contexto.
         GLFW.glfwDefaultWindowHints();
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
-        GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE);
+        GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_FALSE);
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 3);
         GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
@@ -59,7 +59,6 @@ public class GameLoop {
         INPUT_MANAGER.initialize(window);
         CORE_MANAGER.initialize();
         RENDER_MANAGER.initialize();
-        // ConfigCore.getInstance().gameState = GameState.PLAYING;
     }
 
     private void loop(){
