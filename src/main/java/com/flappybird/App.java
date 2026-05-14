@@ -1,20 +1,12 @@
 package com.flappybird;
 
 import com.flappybird.controllers.InputManager;
-import com.flappybird.core.ConfigCore;
-import com.flappybird.core.CoreManager;
-import com.flappybird.core.GameCore;
-import com.flappybird.core.MenuCore;
-import com.flappybird.factories.BirdFactory;
-import com.flappybird.factories.DefaultEntityFactory;
-import com.flappybird.factories.PipeFactory;
-import com.flappybird.graphics.BasicRender;
-import com.flappybird.graphics.GameLoop;
+import com.flappybird.core.*;
+import com.flappybird.factories.*;
+import com.flappybird.graphics.*;
 import com.flappybird.models.World;
 import com.flappybird.utils.SpriteAtlasJson;
-import com.flappybird.views.GameBasicRender;
-import com.flappybird.views.MenuRender;
-import com.flappybird.views.RenderManager;
+import com.flappybird.views.*;
 
 public class App {
 
@@ -30,13 +22,18 @@ public class App {
 
         var gameCore = new GameCore(world);
         var menuCore = new MenuCore(birdFactory, defaultEntityFactory);
+        var gameOverCore = new GameOverCore(defaultEntityFactory, world);
 
-        var gameBasicRender = new GameBasicRender(gameCore.world, new BasicRender());
-        var menuRender = new MenuRender(menuCore);
+        var basicRender = new BasicRender();
+        var spriteRender = new SpriteRenderer();
+
+        var gameBasicRender = new GameBasicRender(gameCore.world, basicRender);
+        var menuRender = new MenuRender(menuCore, spriteRender);
+        var gameOverRender = new GameOverRender(gameOverCore, basicRender, spriteRender);
         
         var inputManager = new InputManager(menuCore);
-        var coreManager = new CoreManager(gameCore, menuCore);
-        var renderManager = new RenderManager(menuRender, gameBasicRender);
+        var coreManager = new CoreManager(gameCore, menuCore, gameOverCore);
+        var renderManager = new RenderManager(menuRender, gameBasicRender, gameOverRender);
 
         new GameLoop(inputManager, coreManager, renderManager);
     }
