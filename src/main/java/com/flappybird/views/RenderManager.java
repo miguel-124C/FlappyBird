@@ -1,5 +1,6 @@
 package com.flappybird.views;
 
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import com.flappybird.core.ConfigCore;
@@ -8,10 +9,12 @@ public class RenderManager implements IRender {
 
     private final MenuRender MENU_RENDER;
     private final IRender GAME_RENDER;
+    private final GameOverRender GAME_OVER_RENDER;
 
-    public RenderManager(MenuRender menuRender, IRender gameRender){
+    public RenderManager(MenuRender menuRender, IRender gameRender, GameOverRender gameOverRender){
         this.MENU_RENDER = menuRender;
         this.GAME_RENDER = gameRender;
+        GAME_OVER_RENDER = gameOverRender;
     }
 
     @Override
@@ -25,12 +28,15 @@ public class RenderManager implements IRender {
                 break;
             case PLAYING:
                 GAME_RENDER.draw(deltaTime);
+                break;
             case PAUSE:
                 // Draw pause
                 GAME_RENDER.draw(deltaTime);
+                break;
             case GAME_OVER:
-                // Draw Gameover
                 GAME_RENDER.draw(deltaTime);
+                GAME_OVER_RENDER.draw(deltaTime);
+                break;
             default:
                 break;
         }
@@ -46,6 +52,7 @@ public class RenderManager implements IRender {
     public void cleanUp() {
         MENU_RENDER.cleanUp();
         GAME_RENDER.cleanUp();
+        GLFW.glfwTerminate();
     }
 
 }

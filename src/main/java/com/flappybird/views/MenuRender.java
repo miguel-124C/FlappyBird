@@ -2,16 +2,17 @@ package com.flappybird.views;
 
 import com.flappybird.core.MenuCore;
 import com.flappybird.graphics.SpriteRenderer;
+import com.flappybird.interfaces.Sprite;
 import com.flappybird.utils.Rectangle;
-import com.flappybird.utils.Vector2;
 
 public class MenuRender implements IRender {
 
     private final MenuCore MENU;
-    private final SpriteRenderer RENDER = new SpriteRenderer();
+    private final SpriteRenderer RENDER;
 
-    public MenuRender(MenuCore menuCore){
+    public MenuRender(MenuCore menuCore, SpriteRenderer render){
         MENU = menuCore;
+        this.RENDER = render;
     }
 
     @Override
@@ -35,7 +36,8 @@ public class MenuRender implements IRender {
             }
 
             var sourceRec = new Rectangle(x, y, dimension.WIDTH, dimension.HEIGHT);
-            RENDER.draw(sprite.TEXTURE, entity.position, entity.scale, sourceRec);
+            var spriteToDraw = new Sprite(sprite.TEXTURE, sourceRec, sprite.TOTAL_FRAMES);
+            RENDER.draw(entity.position, spriteToDraw,entity.scale);
         }
     }
 

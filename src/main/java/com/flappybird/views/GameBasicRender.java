@@ -4,6 +4,8 @@ import com.flappybird.core.ConfigCore;
 import com.flappybird.graphics.BasicRender;
 import com.flappybird.interfaces.enums.PlayerState;
 import com.flappybird.models.World;
+import com.flappybird.utils.Color;
+import com.flappybird.utils.Rectangle;
 
 public class GameBasicRender implements IRender {
     
@@ -21,7 +23,10 @@ public class GameBasicRender implements IRender {
 
         for (var pipe : WORLD.getPipes()) {
             var dimension = pipe.getDimensions();
-            RENDER.dibujarRect(dimension.X, dimension.Y, dimension.WIDTH, dimension.HEIGHT, 0.18f, 0.70f, 0.25f);
+            
+            var souRectangle = new Rectangle(dimension.X, dimension.Y, dimension.WIDTH, dimension.HEIGHT);
+            var color = Color.custom(0.18f, 0.70f, 0.25f, 1);
+            RENDER.dibujarRect(souRectangle, color);
         }
 
         for (var player : ConfigCore.getInstance().getPlayers()) {
@@ -29,9 +34,12 @@ public class GameBasicRender implements IRender {
                 System.out.println("Esta fuera de pantalla");
                 continue;
             }
-            var dimension = player.BIRD.getDimensions();
+
+            var bird = player.BIRD;
+            var dimension = bird.getDimensions();
+            var souRectangle = new Rectangle(dimension.X, dimension.Y, dimension.WIDTH * bird.scale.x(), dimension.HEIGHT * bird.scale.y());
             var color = player.COLOR;
-            RENDER.dibujarRect(dimension.X, dimension.Y, dimension.WIDTH, dimension.HEIGHT, color.R, color.G, color.B);
+            RENDER.dibujarRect(souRectangle, color);
         }
     }
 
