@@ -6,16 +6,17 @@ import com.flappybird.interfaces.enums.GameState;
 import com.flappybird.interfaces.enums.PlayerState;
 import com.flappybird.models.Player;
 import com.flappybird.models.World;
-import com.flappybird.utils.Constants;
-import com.flappybird.utils.Vector2;
+import com.flappybird.utils.*;
 
 public class GameCore implements ICore {
     
     public final World world;    
 
     private float timeSpawnPipes = 0;
-    private final float SPEED_PIPE = 100f;
-    public final float TIME_PER_PIPES = 4;
+    private float pipeSpeed = 100f;
+    public float timePerPipes = 4;
+    private final float DISTANCE_PER_PIPES = 400;
+    private final float MAX_PIPE_SPEED = 200;
 
     public GameCore(World world){
         this.world = world;
@@ -31,6 +32,7 @@ public class GameCore implements ICore {
         var configCore = ConfigCore.getInstance();
         if (checkGameOver(configCore.getPlayers())) {
             configCore.gameState = GameState.GAME_OVER;
+            resetGame();
             return;
         }
 
@@ -38,7 +40,7 @@ public class GameCore implements ICore {
 
         playerFall(configCore.getPlayers(), deltaTime);
 
-        if (timeSpawnPipes >= TIME_PER_PIPES) {
+        if (timeSpawnPipes >= timePerPipes) {
             world.spawnPipes();
             timeSpawnPipes = 0;
         }
@@ -46,23 +48,26 @@ public class GameCore implements ICore {
         for (int i = 0; i < world.getPipes().size(); i++) {
             var pipe = world.getPipes().get(i);
 
-            var distance = SPEED_PIPE * deltaTime;
+            var distance = pipeSpeed * deltaTime;
             pipe.moveLeft(distance);
             
             for (var player : configCore.getPlayers()) {
-                if (player.state == PlayerState.DEAD) {
+                if (player.state == PlayerState.DEAD)
                     arrastrarPlayer(player, deltaTime, distance);
-                }
+
                 world.checkPipeBehind(pipe, player);
+
+                if (pipeSpeed < MAX_PIPE_SPEED) {
+                    var maxScore = ConfigCore.getInstance().getMaxScore();
+                    if ( maxScore > 0 && maxScore % 20 == 0) {
+                        pipeSpeed += 10;
+                        timePerPipes = DISTANCE_PER_PIPES / pipeSpeed;
+                    }
+                }
             }
             
             world.checkPipeOutScreen(pipe, i);
         }
-    }
-    
-    @Override
-    public void reset() {
-
     }
 
     private void playerFall(List<Player> players, float deltaTime){
@@ -70,7 +75,10 @@ public class GameCore implements ICore {
             if (player.state == PlayerState.DEAD) continue;
             player.BIRD.fall(deltaTime);
             
-            if (world.hasCollision(player.BIRD.getDimensions()))
+            var bird = player.BIRD;
+            var dimension = bird.getDimensions();
+            var collider = new Rectangle(dimension.X, dimension.Y, dimension.WIDTH * bird.scale.x(), dimension.HEIGHT * bird.scale.y());
+            if (world.hasCollision(collider))
                 player.state = PlayerState.DEAD;
         }
     }
@@ -116,6 +124,12 @@ public class GameCore implements ICore {
         }
 
         return true;
+    }
+
+    private void resetGame(){
+        timeSpawnPipes = 4;
+        pipeSpeed = 100f;
+        timePerPipes = 4;
     }
 
 }

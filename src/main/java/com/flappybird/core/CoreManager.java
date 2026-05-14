@@ -4,16 +4,19 @@ public class CoreManager implements ICore {
 
     GameCore gameCore;
     MenuCore menuCore;
+    GameOverCore gameOverCore;
 
-    public CoreManager(GameCore gameCore, MenuCore menuCore){
+    public CoreManager(GameCore gameCore, MenuCore menuCore, GameOverCore gameOverCore){
         this.gameCore = gameCore;
         this.menuCore = menuCore;
+        this.gameOverCore = gameOverCore;
     }
 
     @Override
     public void initialize() {
         gameCore.initialize();
         menuCore.initialize();
+        gameOverCore.initialize();
     }
 
     @Override
@@ -25,15 +28,12 @@ public class CoreManager implements ICore {
             case MENU:
                 menuCore.update(deltaTime);
                 break;
+            case GAME_OVER:
+                gameOverCore.update(deltaTime);
+                break;
             default:
                 break;
         }
-    }
-
-    @Override
-    public void reset() {
-        gameCore.reset();
-        menuCore.reset();
     }
     
 }

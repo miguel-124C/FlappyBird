@@ -3,6 +3,7 @@ package com.flappybird.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flappybird.core.ConfigCore;
 import com.flappybird.factories.PipeFactory;
 import com.flappybird.models.entities.PipeEntity;
 import com.flappybird.utils.Constants;
@@ -39,6 +40,7 @@ public class World {
             pipe.isBehind = true;
             pipe.playersId.add(player.getId());
             player.addScore(pipe.VALUE);
+            ConfigCore.getInstance().checkMaxScore(player.getScore());
         }
     }
 

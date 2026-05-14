@@ -13,6 +13,7 @@ public class ConfigCore {
     public PlayModes playMode = PlayModes.SINGLE_PLAYER;
     public GameState gameState = GameState.MENU;
     private List<Player> players = new ArrayList<>();
+    private int maxScore = 0;
 
     private ConfigCore(){ }
 
@@ -25,6 +26,23 @@ public class ConfigCore {
 
     public void addPlayer(Player player){
         players.add(player);
+    }
+
+    public void reset(){
+        maxScore = 0;
+        playMode = PlayModes.SINGLE_PLAYER;
+        gameState = GameState.MENU;
+        players.clear();
+    }
+
+    public int getMaxScore(){
+        return maxScore;
+    }
+
+    public void checkMaxScore(int score){
+        if (score > maxScore) {
+            maxScore = score;
+        }
     }
 
     public List<Player> getPlayers(){
