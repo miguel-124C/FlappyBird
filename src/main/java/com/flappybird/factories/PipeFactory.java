@@ -8,7 +8,7 @@ import com.flappybird.utils.*;
 
 public class PipeFactory {
 
-    private final float GAP_BETWEEN_PIPES = 150f;
+    private final float GAP_BETWEEN_PIPES = 200f;
     private final float MAX_HEIGHT_PIPE;
     private final float MIN_HEIGHT_PIPE;
 

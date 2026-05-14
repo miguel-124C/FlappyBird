@@ -7,9 +7,9 @@ import com.flappybird.utils.Vector2;
 public class BirdEntity extends Entity {
 
     // Fisica vertical.
-    private final float GRAVITY = 400f;          // Aumentado para reacción rápida
-    private final float JUMP_IMPULSE = -250f;     // Negativo para subir
-    private final float MAX_FALL_SPEED = 500f;    // Límite de caída rápido
+    private final float GRAVITY = 500;          // Aumentado para reacción rápida
+    private final float JUMP_IMPULSE = -350f;     // Negativo para subir
+    private final float MAX_FALL_SPEED = 600f;    // Límite de caída rápido
     private float speedY = 0;
 
     public BirdEntity(Vector2 position, Sprite sprite){

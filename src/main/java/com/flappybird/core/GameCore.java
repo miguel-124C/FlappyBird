@@ -13,10 +13,11 @@ public class GameCore implements ICore {
     public final World world;    
 
     private float timeSpawnPipes = 0;
-    private float pipeSpeed = 100f;
-    public float timePerPipes = 4;
+    private float pipeSpeed = 200f;
+    public float timePerPipes = 2;
     private final float DISTANCE_PER_PIPES = 400;
-    private final float MAX_PIPE_SPEED = 200;
+    private final float MAX_PIPE_SPEED = 500;
+    private int prevScore = 0;
 
     public GameCore(World world){
         this.world = world;
@@ -56,17 +57,22 @@ public class GameCore implements ICore {
                     arrastrarPlayer(player, deltaTime, distance);
 
                 world.checkPipeBehind(pipe, player);
-
-                if (pipeSpeed < MAX_PIPE_SPEED) {
-                    var maxScore = ConfigCore.getInstance().getMaxScore();
-                    if ( maxScore > 0 && maxScore % 20 == 0) {
-                        pipeSpeed += 10;
-                        timePerPipes = DISTANCE_PER_PIPES / pipeSpeed;
-                    }
-                }
             }
-            
+
             world.checkPipeOutScreen(pipe, i);
+        }
+        
+        var maxScore = ConfigCore.getInstance().getMaxScore();
+        if (pipeSpeed < MAX_PIPE_SPEED && prevScore != maxScore && maxScore > 0) {
+            if (maxScore % 20 == 0) {
+                pipeSpeed += 10;
+                timePerPipes = DISTANCE_PER_PIPES / pipeSpeed;
+                System.out.println("pipeSpeed" + pipeSpeed);
+                System.out.println("timePerPipes" + timePerPipes);
+                System.out.println(timePerPipes * pipeSpeed);
+                System.out.println("----------------------------------");
+                prevScore = maxScore;
+            }
         }
     }
 
@@ -106,18 +112,6 @@ public class GameCore implements ICore {
         player.BIRD.fall(deltaTime);
     }
 
-    private boolean lastAlive(){
-        var players = ConfigCore.getInstance().getPlayers();
-
-        var amountAlive = 0;
-        for (Player player : players) {
-            if (player.state == PlayerState.LIVE)
-                amountAlive++;   
-        }
-
-        return amountAlive == 1;
-    }
-
     private boolean checkGameOver(List<Player> players){
         for (Player player : players) {
             if (player.state == PlayerState.LIVE) return false;
@@ -127,9 +121,10 @@ public class GameCore implements ICore {
     }
 
     private void resetGame(){
-        timeSpawnPipes = 4;
-        pipeSpeed = 100f;
-        timePerPipes = 4;
+        timeSpawnPipes = 2;
+        pipeSpeed = 200f;
+        timePerPipes = 2;
+        prevScore = 0;
     }
 
 }
