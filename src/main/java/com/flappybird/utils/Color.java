@@ -2,19 +2,19 @@ package com.flappybird.utils;
 
 public class Color {
 
-    public final int R;
-    public final int G;
-    public final int B;
+    public final float R;
+    public final float G;
+    public final float B;
     public final float ALPHA;
 
-    private Color(int r, int g, int b, float alpha){
+    private Color(float r, float g, float b, float alpha){
         this.R = r;
         this.G = g;
         this.B = b;
         this.ALPHA = alpha;
     }
 
-    public static Color custom(int r, int g, int b, float alpha){
+    public static Color custom(float r, float g, float b, float alpha){
         return new Color(r, g, b, alpha);
     }
 
