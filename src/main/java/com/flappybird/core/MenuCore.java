@@ -93,7 +93,7 @@ public class MenuCore implements ICore {
     public void startGame(){
         var configCore = ConfigCore.getInstance();
         var controlOne = GameControl.createControl(GLFW.GLFW_KEY_SPACE, GLFW.GLFW_KEY_ESCAPE);
-        var playerOne = createPlayer(new Vector2(100, 500), Color.blue(), controlOne);
+        var playerOne = createPlayer(new Vector2(500, 500), Color.blue(), controlOne);
         
         switch (configCore.playMode) {
             case SINGLE_PLAYER:
@@ -101,7 +101,7 @@ public class MenuCore implements ICore {
                 break;
             case MULTI_PLAYER:
                 var controlTwo = GameControl.createControl(GLFW.GLFW_KEY_W, GLFW.GLFW_KEY_BACKSPACE);
-                var playerTwo = createPlayer(new Vector2(600, 500), Color.orange(), controlTwo);
+                var playerTwo = createPlayer(new Vector2(400, 500), Color.orange(), controlTwo);
                 configCore.addPlayer(playerOne);
                 configCore.addPlayer(playerTwo);
                 break;
@@ -113,14 +113,9 @@ public class MenuCore implements ICore {
     }
 
     private Player createPlayer(Vector2 position, Color color, GameControl gameControl){
-        var sacale = new Vector2(4, 4);
+        var sacale = new Vector2(3, 3);
         var bird = BIRD_FACTORY.create(position, sacale);
         return new Player(bird, gameControl, color);
-    }
-
-    @Override
-    public void reset() {
-        
     }
 
     public List<Entity> getEntities(){
