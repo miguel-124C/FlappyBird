@@ -6,6 +6,7 @@ public class Sprite {
     public final Texture TEXTURE;
     public final Rectangle SOURCET_RECTANGLE;
     public final int TOTAL_FRAMES;
+    public double rotation = 0;
     private int currentFrame;
     private Direction animationDirection = Direction.DOWN;
 
