@@ -8,6 +8,9 @@ public abstract class Entity {
     public Vector2 scale;
     public Sprite sprite;
 
+    public float desplazmentEnlapsed = 0;
+    public float factorParallax;
+
     public Rectangle getDimensions(){
         var sourceRectangle = sprite.SOURCET_RECTANGLE;
 

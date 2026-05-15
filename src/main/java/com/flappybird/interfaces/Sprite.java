@@ -1,5 +1,6 @@
 package com.flappybird.interfaces;
 
+import com.flappybird.interfaces.enums.Direction;
 import com.flappybird.utils.*;
 
 public class Sprite {
