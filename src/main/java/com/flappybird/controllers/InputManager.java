@@ -33,9 +33,6 @@ public class InputManager {
             case MENU:
                 handleInMenu();
                 break;
-            case PAUSE:
-                handleInPause();
-                break;
             case GAME_OVER:
                 handleInGameOver();
                 break;
@@ -82,10 +79,6 @@ public class InputManager {
         MENU.isPrevKeyUp = keyUpNow;
         MENU.isPrevKeyDown = keyDownNow;
         isPrevKeyEnter = keyEnterNow;
-    }
-
-    private void handleInPause(){
-        
     }
 
     private void handleInGameOver(){

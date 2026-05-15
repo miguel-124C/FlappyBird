@@ -29,10 +29,6 @@ public class RenderManager implements IRender {
             case PLAYING:
                 GAME_RENDER.draw(deltaTime);
                 break;
-            case PAUSE:
-                // Draw pause
-                GAME_RENDER.draw(deltaTime);
-                break;
             case GAME_OVER:
                 GAME_RENDER.draw(deltaTime);
                 GAME_OVER_RENDER.draw(deltaTime);
