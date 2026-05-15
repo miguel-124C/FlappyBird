@@ -1,5 +1,9 @@
 package com.flappybird.utils;
 
+import java.time.LocalTime;
+
+import com.flappybird.interfaces.enums.TimeDay;
+
 public class Global {
     
     public static String resolvePath(String path) {
@@ -13,6 +17,15 @@ public class Global {
         } catch (java.net.URISyntaxException e) {
             throw new RuntimeException("Ruta inválida: " + path, e);
         }
+    }
+
+    public static TimeDay getTimeDay(){
+        var localTime = LocalTime.now();
+        var hour = localTime.getHour();
+
+        return (hour >= 5 && hour <= 17)
+            ? TimeDay.DAY
+            : TimeDay.NIGHT;
     }
 
 }
