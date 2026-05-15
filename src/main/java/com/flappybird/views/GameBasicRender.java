@@ -24,7 +24,10 @@ public class GameBasicRender implements IRender {
         for (var pipe : WORLD.getPipes()) {
             var dimension = pipe.getDimensions();
             
-            var souRectangle = new Rectangle(dimension.X, dimension.Y, dimension.WIDTH, dimension.HEIGHT);
+            var widthScaled = dimension.WIDTH * pipe.scale.x();
+            var heightScaled = dimension.HEIGHT * pipe.scale.y();
+
+            var souRectangle = new Rectangle(dimension.X, dimension.Y, widthScaled, heightScaled);
             var color = Color.custom(0.18f, 0.70f, 0.25f, 1);
             RENDER.dibujarRect(souRectangle, color);
         }

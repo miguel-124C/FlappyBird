@@ -4,6 +4,8 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import com.flappybird.core.ConfigCore;
+import com.flappybird.utils.Color;
+import com.flappybird.utils.Global;
 
 public class RenderManager implements IRender {
 
@@ -20,8 +22,23 @@ public class RenderManager implements IRender {
     @Override
     public void draw(float deltaTime) {
         // Cielo.
-        GL11.glClearColor(0.52f, 0.80f, 0.92f, 1.0f);
+        var timeDay = Global.getTimeDay();
+        Color color;
+        switch (timeDay) {
+            case DAY:
+                color = Color.custom(0.11f, 0.20f, 0.210588f, 1);
+                break;
+            case NIGHT:
+                color = Color.custom(0.08627f, 0.12313f, 0.12627f, 1);
+                break;
+            default:
+                color = Color.custom(0.52f, 0.80f, 0.92f, 1.0f);
+                break;
+        }
+        GL11.glClearColor(color.R, color.G, color.B, color.ALPHA);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+
+
         switch (ConfigCore.getInstance().gameState) {
             case MENU:
                 MENU_RENDER.draw(deltaTime);

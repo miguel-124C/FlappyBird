@@ -26,10 +26,10 @@ public class MenuRender implements IRender {
             var y = sourceRectangle.Y;
             switch (sprite.getAnimDirection()) {
                 case DOWN:
-                    y = sourceRectangle.Y + (sprite.getCurrentFrame() * dimension.HEIGHT * entity.scale.y());
+                    y = sourceRectangle.Y + (sprite.getCurrentFrame() * dimension.HEIGHT);
                     break;
-                case LEFT:
-                    x = sourceRectangle.X + (sprite.getCurrentFrame() * dimension.WIDTH * entity.scale.x());
+                case RIGHT:
+                    x = sourceRectangle.X + (sprite.getCurrentFrame() * dimension.WIDTH);
                     break;
                 default:
                     break;
