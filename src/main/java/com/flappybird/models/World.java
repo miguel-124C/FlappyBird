@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.flappybird.core.ConfigCore;
 import com.flappybird.factories.PipeFactory;
+import com.flappybird.managers.AudioManager;
 import com.flappybird.models.entities.PipeEntity;
 import com.flappybird.utils.Constants;
 import com.flappybird.utils.Rectangle;
@@ -22,13 +23,20 @@ public class World {
         for (var pipe : pipes){
             var dimensionPipe = pipe.getDimensions();
             
-            if (dimension.intersect(dimensionPipe))
+            if (dimension.intersect(dimensionPipe)){
+                AudioManager.getInstance().playSfHit();
                 return true;
+            }
         }
 
         var outScreenY = dimension.Y <= 0 || dimension.Y + dimension.HEIGHT >= Constants.screenHeight;
         var outScreenX = dimension.X <= 0 || dimension.X + dimension.WIDTH >= Constants.screenWidth;
-        return (outScreenX || outScreenY);
+
+        var isOutScreen = (outScreenX || outScreenY);
+        if (isOutScreen)
+            AudioManager.getInstance().playSfDie();
+
+        return isOutScreen;
     }
 
     public void checkPipeBehind(PipeEntity pipe, Player player){
@@ -41,6 +49,7 @@ public class World {
             pipe.playersId.add(player.getId());
             player.addScore(pipe.VALUE);
             ConfigCore.getInstance().checkMaxScore(player.getScore());
+            AudioManager.getInstance().playSfPoint();
         }
     }
 

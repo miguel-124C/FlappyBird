@@ -10,6 +10,7 @@ import com.flappybird.factories.DefaultEntityFactory;
 import com.flappybird.interfaces.*;
 import com.flappybird.interfaces.enums.GameState;
 import com.flappybird.interfaces.enums.PlayModes;
+import com.flappybird.managers.AudioManager;
 import com.flappybird.models.Player;
 import com.flappybird.utils.*;
 
@@ -82,6 +83,8 @@ public class MenuCore implements ICore {
             default:
                 break;
         }
+
+        AudioManager.getInstance().playSfWing();
         
         ConfigCore.getInstance().playMode =
             (sprite.getCurrentFrame() == 0)

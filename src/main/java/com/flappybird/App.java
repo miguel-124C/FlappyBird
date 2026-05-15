@@ -4,6 +4,7 @@ import com.flappybird.controllers.InputManager;
 import com.flappybird.core.*;
 import com.flappybird.factories.*;
 import com.flappybird.graphics.*;
+import com.flappybird.managers.AudioManager;
 import com.flappybird.models.World;
 import com.flappybird.utils.SpriteAtlasJson;
 import com.flappybird.views.*;
@@ -13,6 +14,8 @@ public class App {
     public static void main(String[] args) {
         SpriteAtlasJson spriteAtlasJson = new SpriteAtlasJson();
         spriteAtlasJson.loadJson();
+        AudioManager.getInstance().loadSounds();
+
 
         ConfigCore.getInstance();
         var pipeFactory = new PipeFactory(spriteAtlasJson);
