@@ -8,8 +8,7 @@ import org.lwjgl.glfw.GLFW;
 import com.flappybird.factories.BirdFactory;
 import com.flappybird.factories.DefaultEntityFactory;
 import com.flappybird.interfaces.*;
-import com.flappybird.interfaces.enums.GameState;
-import com.flappybird.interfaces.enums.PlayModes;
+import com.flappybird.interfaces.enums.*;
 import com.flappybird.managers.AudioManager;
 import com.flappybird.models.Player;
 import com.flappybird.utils.*;
@@ -48,7 +47,18 @@ public class MenuCore implements ICore {
         var menuTitleDim = menuTitle.getDimensions();
         var positionGameMode = new Vector2(menuTitleDim.X, menuTitleDim.Y + menuTitleDim.HEIGHT + 100);
         gameModeSelect = DEFAULT_FACTORY.createEntity(positionGameMode, "GAME_MODE", "assets/selection-mode-sprite.png", scale);
+
+        var positionBackground = new Vector2(0, 0);
+        var scaleBackground = new Vector2(4, 4);
+        var backgroundMenu = DEFAULT_FACTORY.createEntity(positionBackground, "BACKGROUND_MENU", "assets/game_scenary.png", scaleBackground);
         
+        var timeDay = Global.getTimeDay();
+        if (timeDay == TimeDay.NIGHT) { // Cambia el fondo en caso sea de de noche, por defecto muestra fondo de dia
+            backgroundMenu.sprite.changeFrame(1);
+            backgroundMenu.sprite.setAnimationDirection(Direction.RIGHT);
+        }
+        
+        entities.add(backgroundMenu);
         entities.add(menuTitle);
         entities.add(bird);
         entities.add(gameModeSelect);

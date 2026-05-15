@@ -1,5 +1,7 @@
 package com.flappybird.core;
 
+import com.flappybird.core.Game.GameCore;
+
 public class CoreManager implements ICore {
 
     GameCore gameCore;

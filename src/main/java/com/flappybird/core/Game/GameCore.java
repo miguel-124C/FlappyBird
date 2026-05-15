@@ -1,16 +1,18 @@
-package com.flappybird.core;
+package com.flappybird.core.Game;
 
 import java.util.List;
 
+import com.flappybird.core.ConfigCore;
+import com.flappybird.core.ICore;
 import com.flappybird.interfaces.enums.GameState;
 import com.flappybird.interfaces.enums.PlayerState;
 import com.flappybird.models.Player;
 import com.flappybird.models.World;
 import com.flappybird.utils.*;
 
-public class GameCore implements ICore {
+public abstract class GameCore implements ICore {
     
-    public final World world;    
+    public final World world;
 
     private float timeSpawnPipes = 0;
     private float pipeSpeed = 200f;
@@ -38,7 +40,6 @@ public class GameCore implements ICore {
         }
 
         timeSpawnPipes += deltaTime;
-
         playerFall(configCore.getPlayers(), deltaTime);
 
         if (timeSpawnPipes >= timePerPipes) {
@@ -67,10 +68,6 @@ public class GameCore implements ICore {
             if (maxScore % 20 == 0) {
                 pipeSpeed += 10;
                 timePerPipes = DISTANCE_PER_PIPES / pipeSpeed;
-                System.out.println("pipeSpeed" + pipeSpeed);
-                System.out.println("timePerPipes" + timePerPipes);
-                System.out.println(timePerPipes * pipeSpeed);
-                System.out.println("----------------------------------");
                 prevScore = maxScore;
             }
         }
@@ -90,8 +87,6 @@ public class GameCore implements ICore {
     }
 
     private void arrastrarPlayer(Player player, float deltaTime, float distance){
-        System.out.println("Arrastrando player");
-        
         tumbarPlayer(player, deltaTime);
         var dimension = player.BIRD.getDimensions();
         var x = dimension.X - distance;
@@ -105,17 +100,13 @@ public class GameCore implements ICore {
     private void tumbarPlayer(Player player, float deltaTime){
         var dimension = player.BIRD.getDimensions();
         
-        if (dimension.Y + dimension.HEIGHT >= Constants.screenHeight) {
-
-            return;
-        }
+        if (dimension.Y + dimension.HEIGHT >= Constants.screenHeight) return;
         player.BIRD.fall(deltaTime);
     }
 
     private boolean checkGameOver(List<Player> players){
-        for (Player player : players) {
+        for (Player player : players)
             if (player.state == PlayerState.LIVE) return false;
-        }
 
         return true;
     }
