@@ -24,7 +24,7 @@ public class PipeFactory {
     public PipeFactory(SpriteAtlasJson spriteAtlasJson){
         this.SPRITE_ATLAS = spriteAtlasJson;
         TEXTURE_PATH = SPRITE_ATLAS.getTexturePath();
-        MIN_HEIGHT_PIPE = 50f;
+        MIN_HEIGHT_PIPE = 100f;
         MAX_HEIGHT_PIPE = LIMIT_HEIGHT - GAP_BETWEEN_PIPES - MIN_HEIGHT_PIPE;
     }
 

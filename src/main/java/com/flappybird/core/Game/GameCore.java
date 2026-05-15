@@ -15,9 +15,9 @@ public abstract class GameCore implements ICore {
     public final World world;
 
     private float timeSpawnPipes = 0;
-    private float pipeSpeed = 200f;
-    public float timePerPipes = 2;
-    private final float DISTANCE_PER_PIPES = 400;
+    private float pipeSpeed = Constants.PIPE_SPEED;
+    public float timePerPipes = Constants.TIME_PER_PIPES;
+    private final float DISTANCE_PER_PIPES = Constants.DISTANCE_PER_PIPES;
     private final float MAX_PIPE_SPEED = 500;
     private int prevScore = 0;
 
@@ -50,12 +50,12 @@ public abstract class GameCore implements ICore {
         for (int i = 0; i < world.getPipes().size(); i++) {
             var pipe = world.getPipes().get(i);
 
-            var distance = pipeSpeed * deltaTime;
-            pipe.moveLeft(distance);
+            var displacement = pipeSpeed * deltaTime;
+            pipe.moveLeft(displacement);
             
             for (var player : configCore.getPlayers()) {
                 if (player.state == PlayerState.DEAD)
-                    arrastrarPlayer(player, deltaTime, distance);
+                    arrastrarPlayer(player, deltaTime, displacement);
 
                 world.checkPipeBehind(pipe, player);
             }
@@ -86,10 +86,10 @@ public abstract class GameCore implements ICore {
         }
     }
 
-    private void arrastrarPlayer(Player player, float deltaTime, float distance){
+    private void arrastrarPlayer(Player player, float deltaTime, float displacement){
         tumbarPlayer(player, deltaTime);
         var dimension = player.BIRD.getDimensions();
-        var x = dimension.X - distance;
+        var x = dimension.X - displacement;
         player.BIRD.position = new Vector2(x, dimension.Y);
 
         var birdOutScreen = dimension.X + dimension.WIDTH < 0;
@@ -111,10 +111,14 @@ public abstract class GameCore implements ICore {
         return true;
     }
 
+    public float getPipeSpeed(){
+        return pipeSpeed;
+    }
+
     private void resetGame(){
-        timeSpawnPipes = 2;
-        pipeSpeed = 200f;
-        timePerPipes = 2;
+        timeSpawnPipes = Constants.TIME_PER_PIPES; // Se lo setea con este valor, para que a la siguiente no espere para spawnear pipes
+        pipeSpeed = Constants.PIPE_SPEED;
+        timePerPipes = Constants.TIME_PER_PIPES;
         prevScore = 0;
     }
 

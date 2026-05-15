@@ -16,8 +16,8 @@ public class CoreManager implements ICore {
 
     @Override
     public void initialize() {
-        gameCore.initialize();
         menuCore.initialize();
+        gameCore.initialize();
         gameOverCore.initialize();
     }
 
