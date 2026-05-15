@@ -22,8 +22,12 @@ public class World {
     public boolean hasCollision(Rectangle dimension){
         for (var pipe : pipes){
             var dimensionPipe = pipe.getDimensions();
+            var width = dimensionPipe.WIDTH * pipe.scale.x();
+            var height = dimensionPipe.HEIGHT * pipe.scale.y();
+
+            var dimensionScaled = new Rectangle(dimensionPipe.X, dimensionPipe.Y, width, height);
             
-            if (dimension.intersect(dimensionPipe)){
+            if (dimension.intersect(dimensionScaled)){
                 AudioManager.getInstance().playSfHit();
                 return true;
             }

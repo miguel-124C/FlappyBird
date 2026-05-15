@@ -44,6 +44,10 @@ public class Sprite {
         return currentFrame;
     }
 
+    public void setAnimationDirection(Direction direction){
+        animationDirection = direction;
+    }
+
     public Direction getAnimDirection(){
         return animationDirection;
     }
