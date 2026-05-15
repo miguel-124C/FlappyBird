@@ -26,10 +26,10 @@ public class RenderManager implements IRender {
         Color color;
         switch (timeDay) {
             case DAY:
-                color = Color.custom(0.11f, 0.20f, 0.210588f, 1);
+                color = Color.custom(0.4392f, 0.7725f, 0.8078f, 1);
                 break;
             case NIGHT:
-                color = Color.custom(0.08627f, 0.12313f, 0.12627f, 1);
+                color = Color.custom(0.2431f, 0.3451f, 0.3569f, 1);
                 break;
             default:
                 color = Color.custom(0.52f, 0.80f, 0.92f, 1.0f);
@@ -59,6 +59,7 @@ public class RenderManager implements IRender {
     public void initialize() {
         MENU_RENDER.initialize();
         GAME_RENDER.initialize();
+        GAME_OVER_RENDER.initialize();
     }
 
     @Override

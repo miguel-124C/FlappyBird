@@ -5,8 +5,8 @@ import org.lwjgl.glfw.GLFW;
 import com.flappybird.core.ConfigCore;
 import com.flappybird.core.GameOverCore;
 import com.flappybird.core.MenuCore;
+import com.flappybird.interfaces.enums.Direction;
 import com.flappybird.managers.AudioManager;
-import com.flappybird.utils.Direction;
 
 public class InputManager {
 

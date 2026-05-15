@@ -28,7 +28,7 @@ public class GameOverRender implements IRender {
         // Draw dark modal
         BASIC_RENDER.draw(deltaTime);
         var souRectangle = new Rectangle(0, 0, Constants.screenWidth, Constants.screenHeight);
-        BASIC_RENDER.dibujarRect(souRectangle, Color.custom(0, 0, 0, 0.5f));
+        BASIC_RENDER.dibujarRect(souRectangle, Color.custom(0, 0, 0, 0.7f));
 
         for (var entity : GAME_OVER_CORE.getEntities())
             SPRITE_RENDER.draw(entity.position, entity.sprite, entity.scale);

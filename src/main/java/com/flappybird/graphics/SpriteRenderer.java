@@ -85,7 +85,6 @@ public class SpriteRenderer {
         texture.unbind();
     }
 
-    // @Override
     public void initialize() {
         crearShaders();
         crearQuadBase();
