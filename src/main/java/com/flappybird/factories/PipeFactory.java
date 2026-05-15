@@ -12,14 +12,14 @@ public class PipeFactory {
     private final float MAX_HEIGHT_PIPE;
     private final float MIN_HEIGHT_PIPE;
 
-    private final int LIMIT_WIDTH = Constants.screenWidth;
-    private final int LIMIT_HEIGHT = Constants.screenHeight;
+    private final int LIMIT_WIDTH = Constants.screenWidth; // 1024
+    private final int LIMIT_HEIGHT = Constants.screenHeight; // 768
 
-    private final int WIDTH_PIPE = 48;
     private final String TEXTURE_PATH;
 
     private final SpriteAtlasJson SPRITE_ATLAS;
     private final Random RANDOM = new Random();
+    private final Vector2 SCALE = new Vector2(3, 4);
 
     public PipeFactory(SpriteAtlasJson spriteAtlasJson){
         this.SPRITE_ATLAS = spriteAtlasJson;
@@ -29,33 +29,38 @@ public class PipeFactory {
     }
 
     public PipeEntity spawnPipe() {
-        var position = new Vector2(LIMIT_WIDTH, 0);
-
-        var spAtlas = SPRITE_ATLAS.getSprite("PIPE_TOP");
-
         var texture = new Texture(TEXTURE_PATH);
-        var heightSource = RANDOM.nextFloat(MIN_HEIGHT_PIPE, MAX_HEIGHT_PIPE);
-        var sourceRectangle = new Rectangle(spAtlas.x(), spAtlas.y(), WIDTH_PIPE, heightSource);
+        
+        var spAtlas = SPRITE_ATLAS.getSprite("PIPE_TOP");
+        
+        var scaledPipeHeight = spAtlas.h() * SCALE.y();
+        var visibleHeight =  RANDOM.nextFloat(MIN_HEIGHT_PIPE, MAX_HEIGHT_PIPE);
+        // Empujamos el pipe hacia arriba (Y negativo) para que solo se asome 'visibleHeight'
+        // Como el (0,0) es arriba a la izquierda, restamos el alto total menos lo visible.
+        float yPosition = visibleHeight - scaledPipeHeight;
+        var position = new Vector2(LIMIT_WIDTH, yPosition);
+
+        var sourceRectangle = new Rectangle(spAtlas.x(), spAtlas.y(), spAtlas.w(), spAtlas.h());
 
         var sprite = new Sprite(texture, sourceRectangle, 0, spAtlas.totalFrames());
-        return new PipeEntity(position, sprite);
+        return new PipeEntity(position, sprite, SCALE);
     }
 
     public PipeEntity spawnSecondPipe(PipeEntity pipe){
-        var pipeDimension = pipe.getDimensions();
-        var heightPipe = pipeDimension.Y + pipeDimension.HEIGHT;
+        var spAtlas = SPRITE_ATLAS.getSprite("PIPE_BOTTOM");
+        var texture = new Texture(TEXTURE_PATH);
 
-        var ySecondPipe = heightPipe + GAP_BETWEEN_PIPES;
+        var pipeDimension = pipe.getDimensions();
+        // Como pipeDimension.Y es negativo, al sumarle su alto real nos da exactamente el borde inferior visible.
+        var topPipeBottomEdge = pipeDimension.Y + (pipeDimension.HEIGHT * pipe.scale.y());
+
+        var ySecondPipe = topPipeBottomEdge + GAP_BETWEEN_PIPES;
         var position = new Vector2(pipeDimension.X, ySecondPipe);
 
-        var spAtlas = SPRITE_ATLAS.getSprite("PIPE_BOTTOM");
-
-        var texture = new Texture(TEXTURE_PATH);
-        var heightSource = LIMIT_HEIGHT - ySecondPipe;
-        var sourceRectangle = new Rectangle(spAtlas.x(), spAtlas.y(), WIDTH_PIPE, heightSource);
+        var sourceRectangle = new Rectangle(spAtlas.x(), spAtlas.y(), spAtlas.w(), spAtlas.h());
 
         var sprite = new Sprite(texture, sourceRectangle, 0, spAtlas.totalFrames());
-        return new PipeEntity(position, sprite);
+        return new PipeEntity(position, sprite, SCALE);
     }
 
 }
