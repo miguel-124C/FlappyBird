@@ -10,16 +10,16 @@
             "totalFrames": 2
         },{
             "name": "PIPE_TOP",
-            "x": 303,
+            "x": 302,
             "y": 0,
-            "w": 48,
+            "w": 26,
             "h": 135,
             "totalFrames": 1
         },{
             "name": "PIPE_BOTTOM",
             "x": 330,
             "y": 0,
-            "w": 48,
+            "w": 26,
             "h": 121,
             "totalFrames": 1
         },{
@@ -70,6 +70,55 @@
             "y": 0,
             "w": 91,
             "h": 43,
+            "totalFrames": 2
+        },{
+            "name": "BACKGROUND_MENU",
+            "x": 0,
+            "y": 384,
+            "w": 256,
+            "h": 192,
+            "totalFrames": 2
+        },{
+            "name": "CLOUD_DAY",
+            "x": 0,
+            "y": 0,
+            "w": 256,
+            "h": 92,
+            "totalFrames": 2
+        },{
+            "name": "CLOUD_NIGHT",
+            "x": 0,
+            "y": 93,
+            "w": 256,
+            "h": 92,
+            "totalFrames": 2
+        },{
+            "name": "BUILDING_DAY",
+            "x": 0,
+            "y": 192,
+            "w": 256,
+            "h": 56,
+            "totalFrames": 2
+        },{
+            "name": "BUILDING_NIGHT",
+            "x": 0,
+            "y": 254,
+            "w": 256,
+            "h": 56,
+            "totalFrames": 2
+        },{
+            "name": "GRASS_DAY",
+            "x": 0,
+            "y": 576,
+            "w": 256,
+            "h": 50,
+            "totalFrames": 2
+        },{
+            "name": "GRASS_NIGHT",
+            "x": 0,
+            "y": 626,
+            "w": 256,
+            "h": 50,
             "totalFrames": 2
         }
     ]

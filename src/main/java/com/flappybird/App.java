@@ -2,6 +2,7 @@ package com.flappybird;
 
 import com.flappybird.controllers.InputManager;
 import com.flappybird.core.*;
+import com.flappybird.core.Game.*;
 import com.flappybird.factories.*;
 import com.flappybird.graphics.*;
 import com.flappybird.managers.AudioManager;
@@ -23,20 +24,22 @@ public class App {
         var defaultEntityFactory = new DefaultEntityFactory(spriteAtlasJson);
         var world = new World(pipeFactory);
 
-        var gameCore = new GameCore(world);
+        var gameBasicCore = new GameBasicCore(world);
+        var gameSpriteCore = new GameSpriteCore(world, defaultEntityFactory);
         var menuCore = new MenuCore(birdFactory, defaultEntityFactory);
         var gameOverCore = new GameOverCore(defaultEntityFactory, world);
 
         var basicRender = new BasicRender();
         var spriteRender = new SpriteRenderer();
 
-        var gameBasicRender = new GameBasicRender(gameCore.world, basicRender);
+        var gameBasicRender = new GameBasicRender(gameBasicCore.world, basicRender);
+        var gameSpriteRender = new GameSpriteRender(gameSpriteCore, spriteRender);
         var menuRender = new MenuRender(menuCore, spriteRender);
         var gameOverRender = new GameOverRender(gameOverCore, basicRender, spriteRender);
         
         var inputManager = new InputManager(menuCore, gameOverCore);
-        var coreManager = new CoreManager(gameCore, menuCore, gameOverCore);
-        var renderManager = new RenderManager(menuRender, gameBasicRender, gameOverRender);
+        var coreManager = new CoreManager(gameSpriteCore, menuCore, gameOverCore);
+        var renderManager = new RenderManager(menuRender, gameSpriteRender, gameOverRender);
 
         new GameLoop(inputManager, coreManager, renderManager);
     }
