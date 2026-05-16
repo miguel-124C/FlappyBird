@@ -41,7 +41,6 @@ public class GameOverCore implements ICore {
     public void resetGame(){
         ConfigCore.getInstance().reset();
         WORLD.getPipes().clear();
-        System.out.println("Reset game gameovercore");
     }
 
     public List<Entity> getEntities(){

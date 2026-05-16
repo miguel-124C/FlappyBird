@@ -6,6 +6,7 @@ import java.util.List;
 import com.flappybird.interfaces.enums.GameState;
 import com.flappybird.interfaces.enums.PlayModes;
 import com.flappybird.models.Player;
+import com.flappybird.utils.*;
 
 public class ConfigCore {
     
@@ -14,6 +15,10 @@ public class ConfigCore {
     public GameState gameState = GameState.MENU;
     private List<Player> players = new ArrayList<>();
     private int maxScore = 0;
+    public boolean isHudCreated = false;
+
+    // Data speed and loop pipes
+    public float speedGame;
 
     private ConfigCore(){ }
 
@@ -29,9 +34,11 @@ public class ConfigCore {
     }
 
     public void reset(){
+        isHudCreated = false;
         maxScore = 0;
         gameState = GameState.MENU;
         players.clear();
+        ConfigCore.getInstance().speedGame = Constants.TIME_PER_PIPES;
     }
 
     public int getMaxScore(){
