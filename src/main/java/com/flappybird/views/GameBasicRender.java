@@ -4,8 +4,8 @@ import com.flappybird.core.ConfigCore;
 import com.flappybird.graphics.BasicRender;
 import com.flappybird.interfaces.enums.PlayerState;
 import com.flappybird.models.World;
-import com.flappybird.utils.Color;
-import com.flappybird.utils.Rectangle;
+import com.flappybird.utils.*;
+import com.flappybird.interfaces.Entity;
 
 public class GameBasicRender implements IRender {
     
@@ -40,7 +40,22 @@ public class GameBasicRender implements IRender {
             var souRectangle = new Rectangle(dimension.X, dimension.Y, dimension.WIDTH * bird.scale.x(), dimension.HEIGHT * bird.scale.y());
             var color = player.COLOR;
             RENDER.dibujarRect(souRectangle, color);
+            drawBodyBird(bird);
         }
+    }
+
+    // Las partes del ave no tendran collision
+    private void drawBodyBird(Entity bird){
+        var dimension = bird.getDimensions();
+
+        var sourcAla = new Rectangle(dimension.X + 5, dimension.Y + (dimension.WIDTH * bird.scale.y() / 2), dimension.WIDTH * 0.6f * bird.scale.x(), dimension.HEIGHT * 0.4f * bird.scale.y());
+        RENDER.dibujarRect(sourcAla, Color.custom(0.4f, 0.4f, 0.1f, 1));
+        
+        var sourcPico = new Rectangle(dimension.X + (dimension.WIDTH * bird.scale.x()) - 20,  dimension.Y + 10, 30, 30);
+        RENDER.dibujarTriangulo(sourcPico, Color.red());
+
+        var sourcEye = new Rectangle(dimension.X + (dimension.WIDTH * bird.scale.x()) - 20, dimension.Y + 5, 20, 20);
+        RENDER.dibujarCirculo(sourcEye, Color.custom(1, 1, 1, 1));
     }
 
     @Override

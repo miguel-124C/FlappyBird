@@ -16,20 +16,26 @@ import com.flappybird.views.IRender;
 
 public class BasicRender implements IRender {
     private int programa;
-    private int vao;
-    private int vbo;
+    
+    // IDs para el Cuadrado (usado por Rectángulos y Círculos)
+    private int vaoQuad;
+    private int vboQuad;
+    
+    // IDs para el Triángulo
+    private int vaoTri;
+    private int vboTri;
 
     // Uniforms de transformacion y color.
     private int uOffsetLocation;
     private int uScaleLocation;
     private int uColorLocation;
     private int uProjectionLocation;
+    private int uIsCircleLocation;
 
     @Override
     public void draw(float deltaTime) {
         // Activar pipeline y malla base.
         GL20.glUseProgram(programa);
-        GL30.glBindVertexArray(vao);
 
         // Desactivar estados que puedan ocultar la UI
         GL11.glDisable(GL11.GL_DEPTH_TEST); // Ignorar la profundidad (dibujar por encima de todo)
@@ -47,20 +53,52 @@ public class BasicRender implements IRender {
 
     // Helper de dibujo parametrico de rectangulos.
     public void dibujarRect(Rectangle souRectangle, Color color) {
+        GL30.glBindVertexArray(vaoQuad);
         // Traslacion del quad.
         GL20.glUniform2f(uOffsetLocation, souRectangle.X, souRectangle.Y);
         // Escala del quad.
         GL20.glUniform2f(uScaleLocation, souRectangle.WIDTH, souRectangle.HEIGHT);
         // Color.
         GL20.glUniform4f(uColorLocation, color.R, color.G, color.B, color.ALPHA);
+
+        // Apagamos el modo círculo (0)
+        GL20.glUniform1i(uIsCircleLocation, 0);
         // Dibujar 2 triangulos.
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6);
+    }
+
+    // Dibuja un circulo perfecto dentro del area del rectangulo
+    public void dibujarCirculo(Rectangle bounds, Color color) {
+        GL30.glBindVertexArray(vaoQuad);
+
+        GL20.glUniform2f(uOffsetLocation, bounds.X, bounds.Y);
+        GL20.glUniform2f(uScaleLocation, bounds.WIDTH, bounds.HEIGHT);
+        GL20.glUniform4f(uColorLocation, color.R, color.G, color.B, color.ALPHA);
+        
+        // Encendemos el modo círculo (1)
+        GL20.glUniform1i(uIsCircleLocation, 1); 
+        
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6);
+    }
+
+    public void dibujarTriangulo(Rectangle bounds, Color color) {
+        // 1. Enlazar la malla específica del triángulo
+        GL30.glBindVertexArray(vaoTri);
+        
+        GL20.glUniform2f(uOffsetLocation, bounds.X, bounds.Y);
+        GL20.glUniform2f(uScaleLocation, bounds.WIDTH, bounds.HEIGHT);
+        GL20.glUniform4f(uColorLocation, color.R, color.G, color.B, color.ALPHA);
+        GL20.glUniform1i(uIsCircleLocation, 0); // Apagar modo círculo
+        
+        // Dibujar solo 3 vértices
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
     }
 
     @Override
     public void initialize() {
         crearShaders();
         crearQuadBase();
+        crearTrianguloBase();
     }
 
     private void crearShaders() {
@@ -70,7 +108,11 @@ public class BasicRender implements IRender {
             uniform vec2 uOffset;
             uniform vec2 uScale;
             uniform mat4 uProjection;
+
+            out vec2 vLocalPos;
+
             void main() {
+                vLocalPos = aPos.xy;
                 vec2 finalPos = aPos.xy * uScale + uOffset;
                 gl_Position = uProjection * vec4(finalPos, aPos.z, 1.0);
             }
@@ -79,9 +121,20 @@ public class BasicRender implements IRender {
         // Color solido por objeto.
         String fragmentSrc = """
             #version 330 core
+            in vec2 vLocalPos;
+
             uniform vec4 uColor;
+            uniform int uIsCircle;
             out vec4 fragColor;
             void main() {
+                if (uIsCircle == 1) {
+                    // Calculamos la distancia al centro (0.5, 0.5)
+                    float dist = distance(vLocalPos, vec2(0.5, 0.5));
+                    if(dist > 0.5) {
+                        discard; // Cortar esquinas
+                    }
+                }
+
                 fragColor = uColor;
             }
             """;
@@ -113,6 +166,8 @@ public class BasicRender implements IRender {
         uScaleLocation = GL20.glGetUniformLocation(programa, "uScale");
         uColorLocation = GL20.glGetUniformLocation(programa, "uColor");
         uProjectionLocation = GL20.glGetUniformLocation(programa, "uProjection");
+        uIsCircleLocation = GL20.glGetUniformLocation(programa, "uIsCircle");
+
         if (uOffsetLocation == -1 || uScaleLocation == -1 || uColorLocation == -1) {
             throw new RuntimeException("No se pudieron obtener uniforms del shader");
         }
@@ -146,12 +201,12 @@ public class BasicRender implements IRender {
         };
 
         // VAO.
-        vao = GL30.glGenVertexArrays();
-        GL30.glBindVertexArray(vao);
+        vaoQuad = GL30.glGenVertexArrays();
+        GL30.glBindVertexArray(vaoQuad);
 
         // VBO.
-        vbo = GL15.glGenBuffers();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+        vboQuad = GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboQuad);
 
         // Subida de vertices.
         FloatBuffer buffer = BufferUtils.createFloatBuffer(vertices.length);
@@ -167,10 +222,36 @@ public class BasicRender implements IRender {
         GL30.glBindVertexArray(0);
     }
 
+    private void crearTrianguloBase() {
+        float[] vertices = {
+            0.5f, 0.0f, 0.0f, // Punta superior central
+            1.0f, 1.0f, 0.0f, // Esquina inferior derecha
+            0.0f, 1.0f, 0.0f  // Esquina inferior izquierda
+        };
+
+        vaoTri = GL30.glGenVertexArrays();
+        GL30.glBindVertexArray(vaoTri);
+
+        vboTri = GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboTri);
+
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(vertices.length);
+        buffer.put(vertices).flip();
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+
+        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 3 * Float.BYTES, 0);
+        GL20.glEnableVertexAttribArray(0);
+
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        GL30.glBindVertexArray(0);
+    }
+
     @Override
     public void cleanUp() {
-        GL30.glDeleteVertexArrays(vao);
-        GL15.glDeleteBuffers(vbo);
+        GL30.glDeleteVertexArrays(vaoQuad);
+        GL15.glDeleteBuffers(vboQuad);
+        GL30.glDeleteVertexArrays(vaoTri);
+        GL15.glDeleteBuffers(vboTri);
         GL20.glDeleteProgram(programa);
     }
 }
