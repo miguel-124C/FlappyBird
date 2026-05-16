@@ -75,14 +75,22 @@ public abstract class GameCore implements ICore {
 
     private void playerFall(List<Player> players, float deltaTime){
         for (var player : players) {
-            if (player.state == PlayerState.DEAD) continue;
+            if (player.state == PlayerState.DEAD || player.state == PlayerState.OUT_SCREEN) continue;
             player.BIRD.fall(deltaTime);
+
+            player.timeEnlapsedFlying += deltaTime;
+            if (player.timeEnlapsedFlying >= player.TIME_IN_FLYING) {
+                player.BIRD.sprite.changeFrame(0); // Cambia al sprite de caida
+                player.timeEnlapsedFlying = 0;
+            }
             
             var bird = player.BIRD;
             var dimension = bird.getDimensions();
             var collider = new Rectangle(dimension.X, dimension.Y, dimension.WIDTH * bird.scale.x(), dimension.HEIGHT * bird.scale.y());
-            if (world.hasCollision(collider))
+            if (world.hasCollision(collider)){
                 player.state = PlayerState.DEAD;
+                player.BIRD.sprite.changeFrame(2); // Sprite de muerte
+            }
         }
     }
 

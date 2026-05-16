@@ -15,6 +15,9 @@ public class Player {
     public final GameControl GAME_CONTROL;
     public float fallVelocity = 0f;
 
+    public float timeEnlapsedFlying = 0;
+    public final float TIME_IN_FLYING = 0.5f;
+
     private int score = 0;
 
     public Player(BirdEntity bird, GameControl gc, Color color){

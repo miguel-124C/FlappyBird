@@ -53,6 +53,8 @@ public class InputManager {
 
             if (keyJumpNow && !gameControl.prevKey) {
                 player.jump();
+                player.BIRD.sprite.changeFrame(1); // Cambia al sprite de aleteo
+                player.timeEnlapsedFlying = 0; // Se resetea el tiempo de vuelo, para que se anime bien
                 AudioManager.getInstance().playSfSwoosing();
             }
             gameControl.prevKey = keyJumpNow;
