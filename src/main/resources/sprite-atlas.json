@@ -148,6 +148,20 @@
             "w": 256,
             "h": 50,
             "totalFrames": 2
+        },{
+            "name": "SCORE_QUAD",
+            "x": 334,
+            "y": 679,
+            "w": 50,
+            "h": 15,
+            "totalFrames": 1
+        },{
+            "name": "VELOCITY_QUAD",
+            "x": 334,
+            "y": 696,
+            "w": 55,
+            "h": 15,
+            "totalFrames": 1
         }
     ]
 }
