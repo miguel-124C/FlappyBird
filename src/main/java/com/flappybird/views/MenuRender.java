@@ -2,8 +2,7 @@ package com.flappybird.views;
 
 import com.flappybird.core.MenuCore;
 import com.flappybird.graphics.SpriteRenderer;
-import com.flappybird.interfaces.Sprite;
-import com.flappybird.utils.Rectangle;
+import com.flappybird.utils.Global;
 
 public class MenuRender implements IRender {
 
@@ -18,25 +17,7 @@ public class MenuRender implements IRender {
     @Override
     public void draw(float deltaTime) {
         for (var entity : MENU.getEntities()) {
-            var dimension = entity.getDimensions();
-            var sprite = entity.sprite;
-            var sourceRectangle = sprite.SOURCET_RECTANGLE;
-
-            var x = sourceRectangle.X;
-            var y = sourceRectangle.Y;
-            switch (sprite.getAnimDirection()) {
-                case DOWN:
-                    y = sourceRectangle.Y + (sprite.getCurrentFrame() * dimension.HEIGHT);
-                    break;
-                case RIGHT:
-                    x = sourceRectangle.X + (sprite.getCurrentFrame() * dimension.WIDTH);
-                    break;
-                default:
-                    break;
-            }
-
-            var sourceRec = new Rectangle(x, y, dimension.WIDTH, dimension.HEIGHT);
-            var spriteToDraw = new Sprite(sprite.TEXTURE, sourceRec, sprite.TOTAL_FRAMES);
+            var spriteToDraw = Global.getSpriteToDraw(entity, 0);
             RENDER.draw(entity.position, spriteToDraw,entity.scale);
         }
     }
