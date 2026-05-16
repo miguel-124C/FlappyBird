@@ -16,7 +16,7 @@ public abstract class GameCore implements ICore {
 
     private float timeSpawnPipes = 0;
     private float pipeSpeed = Constants.PIPE_SPEED;
-    public float timePerPipes = Constants.TIME_PER_PIPES;
+    private float timePerPipes = Constants.TIME_PER_PIPES;
     private final float DISTANCE_PER_PIPES = Constants.DISTANCE_PER_PIPES;
     private final float MAX_PIPE_SPEED = 500;
     private int prevScore = 0;
@@ -28,6 +28,7 @@ public abstract class GameCore implements ICore {
     @Override
     public void initialize() {
         world.spawnPipes();
+        ConfigCore.getInstance().speedGame = timePerPipes;
     }
 
     @Override
@@ -68,6 +69,7 @@ public abstract class GameCore implements ICore {
             if (maxScore % 20 == 0) {
                 pipeSpeed += 10;
                 timePerPipes = DISTANCE_PER_PIPES / pipeSpeed;
+                ConfigCore.getInstance().speedGame = timePerPipes;
                 prevScore = maxScore;
             }
         }

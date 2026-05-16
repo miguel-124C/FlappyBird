@@ -4,6 +4,7 @@ import com.flappybird.interfaces.GameControl;
 import com.flappybird.interfaces.enums.PlayerState;
 import com.flappybird.models.entities.BirdEntity;
 import com.flappybird.utils.Color;
+import com.flappybird.utils.Vector2;
 
 public class Player {
 
@@ -13,11 +14,12 @@ public class Player {
     public final BirdEntity BIRD;
     public PlayerState state = PlayerState.LIVE;
     public final GameControl GAME_CONTROL;
-    public float fallVelocity = 0f;
 
     public float timeEnlapsedFlying = 0;
     public final float TIME_IN_FLYING = 0.5f;
 
+    public boolean scoreChange = true;
+    public Vector2 positionToScoreText;
     private int score = 0;
 
     public Player(BirdEntity bird, GameControl gc, Color color){
@@ -34,6 +36,7 @@ public class Player {
 
     public void addScore(int score){
         this.score += score;
+        scoreChange = true;
     }
 
     public void changeState(PlayerState state){

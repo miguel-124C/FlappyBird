@@ -10,6 +10,7 @@ public class Sprite {
     public double rotation = 0;
     private int currentFrame;
     private Direction animationDirection = Direction.DOWN;
+    private Color tintColor = Color.custom(1, 1, 1, 1);
 
     public Sprite(Texture texture, Rectangle sourceRectangle, int currentFrame, int totalFrames) {
         TEXTURE = texture;
@@ -43,6 +44,14 @@ public class Sprite {
 
     public int getCurrentFrame(){
         return currentFrame;
+    }
+
+    public void setTintColor(Color color){
+        tintColor = color;
+    }
+
+    public Color getTinColor(){
+        return tintColor;
     }
 
     public void setAnimationDirection(Direction direction){

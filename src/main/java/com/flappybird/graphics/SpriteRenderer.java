@@ -13,6 +13,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import com.flappybird.interfaces.Sprite;
+import com.flappybird.utils.Color;
 import com.flappybird.utils.Constants;
 
 public class SpriteRenderer {
@@ -73,7 +74,8 @@ public class SpriteRenderer {
         GL20.glUniform2f(uTexOffsetLocation, uvX, uvY);
         GL20.glUniform2f(uTexScaleLocation, uvWidth, uvHeight);
 
-        GL20.glUniform4f(uColorLocation, 1f, 1f, 1f, 1f); // sin tinte
+        var color = sprite.getTinColor();
+        GL20.glUniform4f(uColorLocation, color.R, color.G, color.B, color.ALPHA); // Lo tintamos
         GL20.glUniform2f(uOffsetLocation, position.x(), position.y());
 
         float rotationInRadians = (float)Math.toRadians(sprite.rotation);

@@ -8,6 +8,7 @@ import com.flappybird.graphics.*;
 import com.flappybird.managers.AudioManager;
 import com.flappybird.models.World;
 import com.flappybird.utils.Constants;
+import com.flappybird.utils.DigitRegion;
 import com.flappybird.utils.SpriteAtlasJson;
 import com.flappybird.views.*;
 
@@ -18,6 +19,8 @@ public class App {
         SpriteAtlasJson spriteAtlasJson = new SpriteAtlasJson();
         spriteAtlasJson.loadJson();
         AudioManager.getInstance().loadSounds();
+        DigitRegion digitRegion = new DigitRegion();
+        digitRegion.initializeNumbers();
 
         // Inicio del ConfigCore, clase Singleton
         ConfigCore.getInstance();
@@ -33,6 +36,7 @@ public class App {
         // CORES: Logica pura, encargados de crear entidades, para luego mostrarlas.
         var gameBasicCore = new GameBasicCore(world);
         var gameSpriteCore = new GameSpriteCore(world, defaultEntityFactory);
+        var hudCore = new HudCore(defaultEntityFactory, digitRegion);
         var menuCore = new MenuCore(birdFactory, defaultEntityFactory);
         var gameOverCore = new GameOverCore(defaultEntityFactory, world);
 
@@ -42,14 +46,15 @@ public class App {
 
         // Llaman un render y dibujan con dicho render
         var gameRender = getGameRender(gameBasicCore, gameSpriteCore, basicRender, spriteRender);
+        var hudRender = new HudRender(hudCore, spriteRender);
         var menuRender = new MenuRender(menuCore, spriteRender);
         var gameOverRender = new GameOverRender(gameOverCore, basicRender, spriteRender);
     
         // Lee cada tecla que el usuario precione.
         var inputManager = new InputManager(menuCore, gameOverCore);
         // MANAGERS: Dicen que CORE, RENDER se ejecutara, en base al estado del juego
-        var coreManager = new CoreManager(gameSpriteCore, menuCore, gameOverCore);
-        var renderManager = new RenderManager(menuRender, gameRender, gameOverRender);
+        var coreManager = new CoreManager(gameSpriteCore, menuCore, gameOverCore, hudCore);
+        var renderManager = new RenderManager(menuRender, gameRender, gameOverRender, hudRender);
 
         // GameLoop princiapl, inicio del juego.
         new GameLoop(inputManager, coreManager, renderManager);
