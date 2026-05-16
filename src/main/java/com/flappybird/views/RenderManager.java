@@ -12,11 +12,13 @@ public class RenderManager implements IRender {
     private final MenuRender MENU_RENDER;
     private final IRender GAME_RENDER;
     private final GameOverRender GAME_OVER_RENDER;
+    private final HudRender HUD_RENDER;
 
-    public RenderManager(MenuRender menuRender, IRender gameRender, GameOverRender gameOverRender){
+    public RenderManager(MenuRender menuRender, IRender gameRender, GameOverRender gameOverRender, HudRender hudRender){
         this.MENU_RENDER = menuRender;
         this.GAME_RENDER = gameRender;
         GAME_OVER_RENDER = gameOverRender;
+        HUD_RENDER = hudRender;
     }
 
     @Override
@@ -45,9 +47,11 @@ public class RenderManager implements IRender {
                 break;
             case PLAYING:
                 GAME_RENDER.draw(deltaTime);
+                HUD_RENDER.draw(deltaTime);
                 break;
             case GAME_OVER:
                 GAME_RENDER.draw(deltaTime);
+                HUD_RENDER.draw(deltaTime);
                 GAME_OVER_RENDER.draw(deltaTime);
                 break;
             default:
@@ -60,12 +64,15 @@ public class RenderManager implements IRender {
         MENU_RENDER.initialize();
         GAME_RENDER.initialize();
         GAME_OVER_RENDER.initialize();
+        HUD_RENDER.initialize();
     }
 
     @Override
     public void cleanUp() {
         MENU_RENDER.cleanUp();
         GAME_RENDER.cleanUp();
+        GAME_OVER_RENDER.cleanUp();
+        HUD_RENDER.cleanUp();
         GLFW.glfwTerminate();
     }
 

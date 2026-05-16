@@ -33,10 +33,7 @@ public class GameBasicRender implements IRender {
         }
 
         for (var player : ConfigCore.getInstance().getPlayers()) {
-            if (player.state == PlayerState.OUT_SCREEN){
-                System.out.println("Esta fuera de pantalla");
-                continue;
-            }
+            if (player.state == PlayerState.OUT_SCREEN) continue;
 
             var bird = player.BIRD;
             var dimension = bird.getDimensions();

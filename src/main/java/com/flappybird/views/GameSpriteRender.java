@@ -31,10 +31,7 @@ public class GameSpriteRender implements IRender {
             RENDER.draw(pipe.position, pipe.sprite, pipe.scale);
        }
        for (var player : ConfigCore.getInstance().getPlayers()) {
-            if (player.state == PlayerState.OUT_SCREEN){
-                System.out.println("Esta fuera de pantalla");
-                continue;
-            }
+            if (player.state == PlayerState.OUT_SCREEN) continue;
             var bird = player.BIRD;
             var spriteToDraw = Global.getSpriteToDraw(bird, GAP_SPRITE_BIRD);
 
