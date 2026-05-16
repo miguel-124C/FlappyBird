@@ -19,27 +19,23 @@ public class Color {
     }
 
     public static Color red(){
-        return new Color(128, 0, 0, 1);
+        return new Color(0.7333f, 0.1804f, 0.1804f, 1);
     }
 
     public static Color yelllow(){
-        return new Color(128, 0, 0, 1);
+        return new Color(0.8314f, 0.7490f, 0.1529f, 1);
     }
 
     public static Color blue(){
-        return new Color(0, 0, 128, 1);
-    }
-
-    public static Color orange(){
-        return new Color(128, 0, 0, 1);
+        return new Color(0.1529f, 0.4118f, 0.8314f, 1);
     }
 
     public static Color purple(){
-        return new Color(128, 0, 0, 1);
+        return new Color(0.8314f, 0.1529f, 0.7216f, 1);
     }
 
     public static Color green(){
-        return new Color(128, 0, 0, 1);
+        return new Color(0.1922f, 0.8314f, 0.1529f, 1);
     }
 
 }
