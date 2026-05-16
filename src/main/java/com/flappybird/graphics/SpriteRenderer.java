@@ -13,7 +13,6 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import com.flappybird.interfaces.Sprite;
-import com.flappybird.utils.Color;
 import com.flappybird.utils.Constants;
 
 public class SpriteRenderer {

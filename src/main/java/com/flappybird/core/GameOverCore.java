@@ -24,7 +24,7 @@ public class GameOverCore implements ICore {
 
     @Override
     public void initialize() {
-        var scale = new Vector2(6, 6);
+        var scale = new Vector2(4, 4);
         var titleGameOver = DEFAULT_FACTORY.createEntityInCenter("TITLE_GAME_OVER", "assets/sprites.png", scale);
         entities.add(titleGameOver);
     }

@@ -19,6 +19,8 @@ public class App {
         SpriteAtlasJson spriteAtlasJson = new SpriteAtlasJson();
         spriteAtlasJson.loadJson();
         AudioManager.getInstance().loadSounds();
+
+        // Carga datos mapeados de los numeros
         DigitRegion digitRegion = new DigitRegion();
         digitRegion.initializeNumbers();
 
