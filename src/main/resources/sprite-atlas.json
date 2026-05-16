@@ -2,12 +2,40 @@
     "texturePath": "assets/sprites.png",
     "sprites": [
         {
-            "name": "BIRD",
-            "x": 263,
-            "y": 64,
-            "w": 18,
-            "h": 12,
-            "totalFrames": 2
+            "name": "BIRD_YELLOW",
+            "x": 259,
+            "y": 679,
+            "w": 22,
+            "h": 15,
+            "totalFrames": 3
+        },{
+            "name": "BIRD_RED",
+            "x": 259,
+            "y": 695,
+            "w": 22,
+            "h": 15,
+            "totalFrames": 3
+        },{
+            "name": "BIRD_BLUE",
+            "x": 259,
+            "y": 711,
+            "w": 22,
+            "h": 15,
+            "totalFrames": 3
+        },{
+            "name": "BIRD_GREEN",
+            "x": 259,
+            "y": 727,
+            "w": 22,
+            "h": 15,
+            "totalFrames": 3
+        },{
+            "name": "BIRD_PURPLE",
+            "x": 259,
+            "y": 743,
+            "w": 22,
+            "h": 15,
+            "totalFrames": 3
         },{
             "name": "PIPE_TOP",
             "x": 302,
